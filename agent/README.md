@@ -21,8 +21,12 @@ marking the same submissions by hand. See *Before this grades anyone* below.
 
 ```bash
 cd agent
-python run_batch.py sample_data
+python run_batch.py sample_data --fresh
 ```
+
+Requires Python 3.9+ and nothing else — no pip install, no API key, no network.
+`--fresh` clears stored records so the run is reproducible; without it, ratings
+accumulate into each student's history and trends move off Baseline on a second run.
 
 That grades four sample submissions and prints, for each one, the three ratings, which
 parameters abstained and why, the bilingual feedback, and whether it was flagged for a
