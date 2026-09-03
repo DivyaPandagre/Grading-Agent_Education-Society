@@ -62,11 +62,16 @@ class NotAssessedReason(str, Enum):
 
 
 class CannotEvaluateReason(str, Enum):
-    """Why a whole artifact could not be graded."""
+    """Why a whole artifact could not be graded.
+
+    The last two are *our* problems, not the student's, and deliberately carry
+    no student-facing message — see CANNOT_EVALUATE_MESSAGES.
+    """
     NO_AUDIO = "no_audio"
     TOO_SHORT = "too_short"
     UNREADABLE_IMAGE = "unreadable_image"
     CORRUPT_FILE = "corrupt_file"
+    NO_TRANSCRIBER = "no_transcriber"
     PROCESSING_FAILURE = "processing_failure"
 
 
@@ -107,6 +112,25 @@ CANNOT_EVALUATE_MESSAGES: dict[CannotEvaluateReason, StudentMessage] = {
         en="This file could not be opened. Please upload your video as MP4 and "
            "your note as a photo.",
         hi="यह फ़ाइल खुल नहीं सकी। कृपया वीडियो MP4 में और नोट की फ़ोटो अपलोड करें।",
+    ),
+}
+
+
+#: Student-facing text when an artifact was simply never uploaded.
+#: A student who forgot half their homework needs to be told, otherwise the
+#: only signal is a rating that looks unremarkable.
+MISSING_ARTIFACT_MESSAGES: dict[str, StudentMessage] = {
+    "video": StudentMessage(
+        en="You did not upload your speaking video. Please record and send it so "
+           "your full work can be marked.",
+        hi="आपने अपना बोलने वाला वीडियो अपलोड नहीं किया। कृपया उसे रिकॉर्ड करके भेजें "
+           "ताकि आपका पूरा काम जाँचा जा सके।",
+    ),
+    "note": StudentMessage(
+        en="You did not upload your handwritten note. Please add it so your full "
+           "work can be marked.",
+        hi="आपने अपना लिखित नोट अपलोड नहीं किया। कृपया उसे भी भेजें ताकि आपका पूरा "
+           "काम जाँचा जा सके।",
     ),
 }
 
@@ -225,6 +249,14 @@ class ArtifactResult:
 
     @property
     def student_message(self) -> Optional[StudentMessage]:
+        """What to tell the student about this artifact, if anything.
+
+        Covers both "you didn't send it" and "we couldn't read what you sent".
+        A graded artifact has nothing to say here — its feedback comes from the
+        scores.
+        """
+        if self.missing:
+            return MISSING_ARTIFACT_MESSAGES.get(self.kind.value)
         if self.cannot_evaluate is None:
             return None
         return CANNOT_EVALUATE_MESSAGES.get(self.cannot_evaluate)

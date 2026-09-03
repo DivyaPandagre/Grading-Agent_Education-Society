@@ -17,10 +17,43 @@ to end today without an API key.
 Nothing here should grade real students until it has been calibrated against a teacher
 marking the same submissions by hand. See *Before this grades anyone* below.
 
+## See it work — 30 seconds, no setup
+
+```bash
+cd agent
+python run_batch.py sample_data
+```
+
+That grades four sample submissions and prints, for each one, the three ratings, which
+parameters abstained and why, the bilingual feedback, and whether it was flagged for a
+teacher — followed by a summary table.
+
+The four samples are chosen to show the awkward cases rather than four variations of
+"everything went fine":
+
+| Submission | What it demonstrates |
+|---|---|
+| `sub-001` | A complete, solid submission |
+| `sub-002` | **Silent video** — no video rating and a re-upload request, not a low score |
+| `sub-003` | **Note never uploaded** — overall equals the video rating, marked incomplete, and the student is told |
+| `sub-004` | **Smudged handwriting** — two Hindi rows abstain rather than being marked wrong, while a genuinely wrong answer still counts |
+
+A fifth, `sub-real-001`, is **derived from a real student submission** — the vocabulary
+rows and action points were transcribed from an actual handwritten note.
+
+No API key, no network, and deliberately **no student media**: this repository is public,
+and committing identifiable children's video or photographs would breach the Critical
+access-control item in the design. `sample_data/README.md` explains the position and how
+to run against real media kept outside the repo.
+
+**For a non-technical audience**, `Grading_Agent_Walkthrough.ipynb` renders directly in
+GitHub's file view with all its output saved — no Python needed, just open the link.
+
 ## Quick start
 
 ```bash
-python -m unittest discover -s tests    # 57 tests, no dependencies
+python -m unittest discover -s tests    # 83 tests, no dependencies
+python run_batch.py sample_data         # grade the sample submissions
 python build_notebook.py                # regenerate the walkthrough notebook
 ```
 
@@ -53,7 +86,11 @@ print(graded.feedback.hi)
 | `feedback.py` | Bilingual feedback assembly |
 | `providers.py` | The pluggable seams, plus rule-based reference scorers |
 | `pipeline.py` | The one place the stages are wired together |
+| `folder_source.py` | Reads modules and submissions from disk — the first real implementation of the `SubmissionSource` seam |
 | `store.py` | Graded-submission records and rating history |
+| `consent.py` | The consent register — no media is opened without a recorded entry |
+| `local_media.py` | Reads real student media from a private folder outside the repo |
+| `run_batch.py` | The overnight batch run, at demo scale |
 
 ## Design rules the tests actually enforce
 
@@ -120,12 +157,38 @@ activity from posture, abstain rather than score low on thin evidence — are do
 at the top of `providers.py` so they land in the prompt of whatever model implements
 those interfaces.
 
+## Running against real student media
+
+Media of identifiable children never enters this repository — it is public. Instead,
+keep it in a private folder outside version control and point the runner at it:
+
+```bash
+python run_batch.py sample_data --media local_media --module day12_task2_english
+```
+
+Three gates stand before any file is opened:
+
+1. **A consent record.** `consent.json` in the media folder lists which students may be
+   processed. No entry means no processing — and the register *fails closed*, so a
+   missing, unreadable or malformed file grants nothing. There is no bypass argument.
+2. **A human confirmation.** The runner names the students whose media it is about to
+   read and waits for a yes (`--yes` skips this for unattended runs).
+3. **`.gitignore`.** `local_media/` is excluded, and a test fails if any media file
+   appears under `sample_data/`.
+
+`local_media/README.md` has the folder layout and the consent file format.
+
+Offline, duration is measured for real with `ffprobe`; transcription and note reading
+need services that are not wired in yet, so video comes back as `no_transcriber` —
+deliberately *not* `no_audio`. Those recordings have sound; we have no way to hear it
+here, and telling a student their microphone was off would be false.
+
 ## Before this grades anyone
 
 Two items from the design that code cannot satisfy:
 
-1. **Consent.** Recording and processing children's video needs recorded
-   parent/guardian consent first. This is the blocker.
+1. **Consent.** The gate above enforces that a record exists — it cannot make the
+   record true. Someone still has to collect guardian permission.
 2. **Calibration.** Have a teacher grade ~10 submissions by hand, compare per
    parameter, and agree what level of disagreement is acceptable. The rule-based
    scorers in this milestone are honest stand-ins, not a claim to accuracy — only

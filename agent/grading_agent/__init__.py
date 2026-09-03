@@ -14,8 +14,11 @@ Quick start::
     graded = pipeline.grade(submission, module, video_evidence, note_evidence)
     print(graded.overall_rating, graded.feedback.en)
 """
+from .consent import ConsentRecord, ConsentRegister
 from .devanagari import MatchResult, match_against_key, normalize, similarity
 from .feedback import build_feedback
+from .folder_source import FolderSubmissionSource
+from .local_media import ConsentRequired, LocalMediaSource
 from .models import (
     ArtifactKind,
     ArtifactResult,
@@ -47,8 +50,9 @@ from .store import JsonSubmissionStore
 from .trend import compute_trend
 
 __all__ = [
-    "ArtifactKind", "ArtifactResult", "CannotEvaluateReason", "GradedSubmission",
-    "GradingPipeline", "JsonSubmissionStore", "MatchResult", "Module",
+    "ArtifactKind", "ArtifactResult", "CannotEvaluateReason", "ConsentRecord",
+    "ConsentRegister", "ConsentRequired", "GradedSubmission", "LocalMediaSource",
+    "FolderSubmissionSource", "GradingPipeline", "JsonSubmissionStore", "MatchResult", "Module",
     "NotAssessedReason", "NoteEvidence", "NoteParameter", "ParameterScore",
     "RuleBasedNoteScorer", "RuleBasedVideoScorer", "Rubric", "StudentMessage",
     "Submission", "Transcript", "TrendLabel", "VideoEvidence", "VideoParameter",

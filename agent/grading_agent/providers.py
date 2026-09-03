@@ -90,10 +90,16 @@ class NoteEvidence:
 
     ``rows_expected`` / ``rows_filled`` are counted without reading the script,
     which is what keeps Completion independent of OCR quality.
+
+    ``read_confidence`` maps a row to how confidently its handwriting was read,
+    supplied by whatever did the reading. Rows below the threshold abstain
+    instead of being marked wrong — see ``devanagari.py``. Rows with no entry
+    are assumed readable.
     """
     rows_expected: int = 0
     rows_filled: int = 0
     written_rows: dict[str, str] = field(default_factory=dict)
+    read_confidence: dict[str, float] = field(default_factory=dict)
     action_points: tuple[str, ...] = ()
     legible: bool = True
 
@@ -277,7 +283,10 @@ class RuleBasedNoteScorer:
         # Accuracy — match against the module's answer key, abstaining on any
         # row we are not confident we read correctly.
         results = score_answer_key_rows(
-            evidence.written_rows, module.answer_key, read_confidence=None, min_read_confidence=self.min_confidence)
+            evidence.written_rows,
+            module.answer_key,
+            read_confidence=evidence.read_confidence,
+            min_read_confidence=self.min_confidence)
         scoreable = [r for r in results.values() if r.counts_toward_accuracy]
         if scoreable:
             correct = sum(1 for r in scoreable if r.is_match)

@@ -1,0 +1,19 @@
+{
+  "module_id": "day12_task2_english",
+  "title": "Day 12 - Task 2: Teacher English Speaking Training",
+  "instruction": "Use a calm but encouraging voice. Pause after important points. Smile gently. Keep steady eye contact to show reassurance and support.",
+  "reference_content": "Fear of speaking English is common among students, especially in classrooms where English is not their first language. This fear often comes from worry about mistakes, pronunciation, or being laughed at. Teachers have a powerful role in reducing this fear and helping students speak with confidence and comfort.",
+  "skill_type": "speaking_reading",
+  "expects_handwritten_note": true,
+  "eye_contact_expected": true,
+  "word_list": [
+    {"word": "Fear", "phonetic": "FEER", "meaning": "डर"},
+    {"word": "Confidence", "phonetic": "KON-fi-dens", "meaning": "आत्मविश्वास"},
+    {"word": "Pronunciation", "phonetic": "pro-nun-see-AY-shun", "meaning": "उच्चारण"},
+    {"word": "Judgment", "phonetic": "JUJ-ment", "meaning": "निर्णय"},
+    {"word": "Environment", "phonetic": "en-VAI-run-ment", "meaning": "वातावरण"},
+    {"word": "Bravery", "phonetic": "BRAY-vuh-ree", "meaning": "साहस"},
+    {"word": "Criticism", "phonetic": "KRIT-i-siz-um", "meaning": "आलोचना"},
+    {"word": "Encourage", "phonetic": "en-KUH-rij", "meaning": "प्रोत्साहित करना"}
+  ]
+}
