@@ -245,7 +245,18 @@ class ArtifactResult:
 
     @property
     def was_graded(self) -> bool:
-        return self.rating is not None
+        """A rating earned from actual scores.
+
+        A missing artifact carries a 0, but it was never *graded* — nobody
+        looked at any work. Keeping these apart is what stops a suspended or
+        unreadable artifact from being treated like a zero.
+        """
+        return self.rating is not None and not self.missing
+
+    @property
+    def counts_as_zero(self) -> bool:
+        """Nothing was uploaded, so this part of the homework scores 0."""
+        return self.missing
 
     @property
     def student_message(self) -> Optional[StudentMessage]:

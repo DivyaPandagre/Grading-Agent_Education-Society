@@ -26,7 +26,8 @@ path you choose before you put a single file in it.
 | | Source |
 |---|---|
 | `sub-001` … `sub-004` | Invented, to exercise specific pipeline behaviours |
-| `sub-real-001` + `modules/delegating_tasks.json` | **Derived from a real student submission** — the vocabulary rows and action points were transcribed from an actual handwritten note. Text only; the photograph is not in this repo, and the student is pseudonymous |
+| `sub-real-001` | Text transcribed from a real student's handwritten note. Text only; the photograph is not in this repo, and the student is pseudonymous |
+| `modules/delegating_tasks.json` | **NOT A REAL MODULE — written by Claude, never supplied by the school.** Rows 1–10 of its answer key are the student's own answers copied back, so grading that student against it is circular; rows 11–15 were invented. Any accuracy figure produced against this file is an artifact of provenance, not a measurement. Replace with the actual 71-TS module before this decides anything. See `_provenance` inside the file |
 
 `sub-real-001` has no video attached, for two reasons: the media stays out of the repo
 for the reasons above, and offline there is no speech-to-text available to turn a

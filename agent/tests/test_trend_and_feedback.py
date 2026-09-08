@@ -170,14 +170,16 @@ class TestPipeline(unittest.TestCase):
         from grading_agent import mean_of_assessed
         self.assertGreaterEqual(mean_of_assessed(h_scores), mean_of_assessed(v_scores) - 0.01)
 
-    def test_missing_note_marks_incomplete_without_penalty(self):
+    def test_missing_note_scores_zero_and_marks_incomplete(self):
         video = VideoEvidence(
             transcript=Transcript("environment bravery words here", 60.0, 110, 1),
             sampled_frame_count=6, hands_visible_in_frames=3, duration_seconds=60.0)
         graded = self.pipeline.grade(self.submission, self.module, video, None)
 
         self.assertTrue(graded.incomplete)
-        self.assertEqual(graded.overall_rating, graded.video.rating)
+        # The note was never uploaded, so it scores 0 and halves the overall.
+        self.assertEqual(graded.overall_rating,
+                         round(graded.video.rating * 0.5, 2))
 
     def test_speed_is_measured_from_real_timing(self):
         transcript = Transcript("word " * 120, 60.0, 120, 0)

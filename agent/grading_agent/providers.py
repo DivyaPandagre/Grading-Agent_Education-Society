@@ -74,13 +74,30 @@ class Transcript:
 
 @dataclass(frozen=True)
 class VideoEvidence:
+    """What was extracted from a submitted video.
+
+    ``audio_stream_present`` and ``transcript`` answer two different questions,
+    and conflating them mislabels a student. A file with no audio track means
+    the microphone really was off — that is the student's problem and they
+    should be told. A file with audio but no transcript means we have not
+    configured speech-to-text — our problem, and no reason to accuse anyone of
+    recording in silence.
+    """
     transcript: Optional[Transcript] = None
     sampled_frame_count: int = 0
     hands_visible_in_frames: int = 0
     duration_seconds: float = 0.0
+    audio_stream_present: bool = False
 
     @property
     def has_audio(self) -> bool:
+        """True if the recording actually carries sound."""
+        if self.audio_stream_present:
+            return True
+        return self.transcript is not None and self.transcript.word_count > 0
+
+    @property
+    def has_transcript(self) -> bool:
         return self.transcript is not None and self.transcript.word_count > 0
 
 
@@ -122,6 +139,22 @@ class ResultSink(Protocol):
 
 
 @runtime_checkable
+class StudentLifecycle(Protocol):
+    """Removal, as part of the contract rather than as an afterthought.
+
+    The portal MUST call ``on_student_removed`` when a student leaves the
+    school, is unenrolled, or withdraws consent. Everything this system holds
+    about a child is derived data, and derived data that outlives the
+    relationship is just a file on a child that nobody remembers keeping.
+
+    ``grading_agent.erasure.erase_student`` is the reference implementation; it
+    requires the caller to state an audit-retention policy rather than
+    inheriting one, because that choice belongs to the school.
+    """
+    def on_student_removed(self, student_id: str) -> None: ...
+
+
+@runtime_checkable
 class Transcriber(Protocol):
     def transcribe(self, video_path: str) -> Optional[Transcript]: ...
 
@@ -149,10 +182,18 @@ MIN_VIDEO_SECONDS = 10.0
 
 
 def check_video(evidence: VideoEvidence) -> Optional[CannotEvaluateReason]:
-    """Decide whether the video can be graded at all, before scoring anything."""
+    """Decide whether the video can be graded at all, before scoring anything.
+
+    A video with sound but no transcript is **not** blocked here. Some
+    parameters (Hand Gesture, and posture-based signals) can still be observed
+    from frames, and the ones that need speech abstain individually. Refusing
+    the whole artifact would throw away real evidence and tell the student
+    nothing useful.
+    """
     if evidence.duration_seconds <= 0:
         return CannotEvaluateReason.CORRUPT_FILE
     if not evidence.has_audio:
+        # Genuinely silent — the microphone was off. The student can fix this.
         return CannotEvaluateReason.NO_AUDIO
     if evidence.duration_seconds < MIN_VIDEO_SECONDS:
         return CannotEvaluateReason.TOO_SHORT
@@ -185,7 +226,7 @@ class RuleBasedVideoScorer:
         transcript = evidence.transcript
 
         # Speed — genuinely measured from transcript timing.
-        wpm = transcript.words_per_minute if transcript else None
+        wpm = transcript.words_per_minute if evidence.has_transcript else None
         if wpm is None:
             scores.append(ParameterScore.not_assessed(
                 VideoParameter.SPEED.value, NotAssessedReason.NO_TRANSCRIPT,
@@ -203,7 +244,7 @@ class RuleBasedVideoScorer:
                 VideoParameter.SPEED.value, value, f"Measured {wpm} words per minute."))
 
         # Confidence — filler rate as a stand-in signal.
-        if transcript and transcript.word_count:
+        if evidence.has_transcript:
             rate = transcript.filler_count / transcript.word_count
             value = 5 if rate < 0.01 else 4 if rate < 0.03 else 3 if rate < 0.06 else 2
             scores.append(ParameterScore.scored(
@@ -214,7 +255,7 @@ class RuleBasedVideoScorer:
                 VideoParameter.CONFIDENCE.value, NotAssessedReason.NO_TRANSCRIPT))
 
         # Vocabulary — did the module's target words actually get said?
-        if transcript and module.word_list:
+        if evidence.has_transcript and module.word_list:
             said = sum(1 for e in module.word_list
                        if e.word.lower() in transcript.text.lower())
             ratio = said / len(module.word_list)
