@@ -20,6 +20,7 @@ from .models import (
     ArtifactResult,
     CannotEvaluateReason,
     GradedSubmission,
+    NotAssessedReason,
     NoteParameter,
     ParameterScore,
     VideoParameter,
@@ -48,7 +49,20 @@ def build_artifact_result(
 ) -> ArtifactResult:
     """Assemble one artifact's outcome, computing its rating if it has one."""
     if missing:
-        return ArtifactResult(kind=kind, missing=True)
+        # Nothing was uploaded, so this scores 0 — and 0 here does not break the
+        # rule that abstentions are never zeroed, because it is not an
+        # abstention. The two cases are different in kind:
+        #
+        #   missing          the student did not do this part  -> 0, a fact
+        #                                                          about the work
+        #   cannot_evaluate  they did it and we could not read
+        #                    it (silent audio, blurred photo,
+        #                    no transcriber)                   -> no rating ever
+        #
+        # Confusing them is how a child gets a 0 because our OCR failed. The
+        # student is told which of the two happened, and a 0 here is reversible:
+        # when the missing artifact arrives, the submission is re-evaluated.
+        return ArtifactResult(kind=kind, missing=True, rating=0.0)
 
     if cannot_evaluate is not None:
         # No rating is produced. This is the whole point: a silent video has
@@ -57,13 +71,16 @@ def build_artifact_result(
 
     rating = mean_of_assessed(scores)
     if rating is None:
-        # Scores were supplied but every one abstained — that is materially the
-        # same as not being able to evaluate the artifact.
-        return ArtifactResult(
-            kind=kind,
-            scores=tuple(scores),
-            cannot_evaluate=CannotEvaluateReason.PROCESSING_FAILURE,
-        )
+        # Every parameter abstained, so there is nothing to average. Report the
+        # reason the parameters themselves gave rather than a generic failure —
+        # "we have no speech-to-text" and "something crashed" call for different
+        # actions from whoever is running this.
+        reasons = {s.reason for s in scores if s.reason is not None}
+        if NotAssessedReason.NO_TRANSCRIPT in reasons:
+            blocker = CannotEvaluateReason.NO_TRANSCRIBER
+        else:
+            blocker = CannotEvaluateReason.PROCESSING_FAILURE
+        return ArtifactResult(kind=kind, scores=tuple(scores), cannot_evaluate=blocker)
     return ArtifactResult(kind=kind, scores=tuple(scores), rating=rating)
 
 
@@ -84,6 +101,21 @@ def combine_overall(
     if v_ok and n_ok:
         overall = video.rating * weights["video"] + note.rating * weights["note"]
         return round(overall, 2), False
+
+    # A part that was never uploaded scores 0 and is blended in, because the
+    # student has genuinely not done half the homework. This is the ONLY route
+    # by which a 0 enters an overall rating.
+    #
+    # A part that was uploaded but could not be evaluated — silent audio, an
+    # unreadable photo, an off-topic suspension — is not a 0 and never becomes
+    # one. In that case the rating we do have stands on its own, or there is no
+    # rating at all. Nothing here may punish a student for our gap.
+    if v_ok and note.counts_as_zero:
+        overall = video.rating * weights["video"] + 0.0 * weights["note"]
+        return round(overall, 2), True
+    if n_ok and video.counts_as_zero:
+        overall = 0.0 * weights["video"] + note.rating * weights["note"]
+        return round(overall, 2), True
 
     if v_ok:
         return video.rating, True

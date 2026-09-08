@@ -19,6 +19,22 @@ from .devanagari import MatchResult, match_against_key, normalize, similarity
 from .feedback import build_feedback
 from .folder_source import FolderSubmissionSource
 from .local_media import ConsentRequired, LocalMediaSource
+from .profile import StudentProfile, build_profile, forget
+from .relevance import (
+    Relevance,
+    RelevanceVerdict,
+    check_note_relevance,
+    check_transcript_relevance,
+)
+from .responsible import (
+    Appeal,
+    AppealRegister,
+    AuditLog,
+    FORBIDDEN_INFERENCES,
+    check_evidence,
+    fairness_report,
+    scan_for_forbidden_inference,
+)
 from .models import (
     ArtifactKind,
     ArtifactResult,
@@ -56,7 +72,11 @@ __all__ = [
     "NotAssessedReason", "NoteEvidence", "NoteParameter", "ParameterScore",
     "RuleBasedNoteScorer", "RuleBasedVideoScorer", "Rubric", "StudentMessage",
     "Submission", "Transcript", "TrendLabel", "VideoEvidence", "VideoParameter",
-    "WordListEntry", "build_artifact_result", "build_feedback", "check_note",
+    "Appeal", "AppealRegister", "AuditLog", "FORBIDDEN_INFERENCES", "Relevance",
+    "RelevanceVerdict", "StudentProfile", "WordListEntry", "build_artifact_result",
+    "build_profile", "check_evidence", "check_note_relevance",
+    "check_transcript_relevance", "fairness_report", "forget",
+    "scan_for_forbidden_inference", "build_feedback", "check_note",
     "check_video", "combine_overall", "compute_trend", "grade_submission",
     "match_against_key", "mean_of_assessed", "normalize", "similarity",
 ]

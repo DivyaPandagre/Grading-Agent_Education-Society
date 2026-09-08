@@ -54,8 +54,8 @@ _NEXT_STEP = {
                    "सूची में से दो-तीन नए शब्द बोलने की कोशिश करें"),
     "tone": ("read a little more warmly, as if explaining to a friend",
              "थोड़ा और सहज होकर पढ़ें, जैसे किसी दोस्त को समझा रहे हों"),
-    "hand_gesture": ("hold the camera a little further back so your hands show",
-                     "कैमरा थोड़ा दूर रखें ताकि आपके हाथ दिखें"),
+    "hand_gesture": ("use your hands a little more to stress the important words",
+                     "ज़रूरी शब्दों पर ज़ोर देने के लिए हाथों का थोड़ा और प्रयोग करें"),
     "speed": ("pause for one second after each full stop",
               "हर पूर्ण विराम के बाद एक सेकंड रुकें"),
     "completion": ("finish every item on the list",
@@ -83,13 +83,49 @@ def _best_and_weakest(
     return best, weakest
 
 
+def _pick_next_step(
+    weakest: Optional[ParameterScore],
+    assessed: Sequence[ParameterScore],
+    profile=None,
+) -> Optional[ParameterScore]:
+    """Choose what to tell the student to work on next.
+
+    Without a profile this is simply the weakest parameter. With one, it avoids
+    repeating advice the student has already had twice running — hearing "pause
+    after each full stop" every week is how feedback stops being read. The
+    second-weakest is offered instead, and only if there is genuinely something
+    there to improve.
+    """
+    if weakest is None:
+        return None
+    if profile is None or not profile.has_history:
+        return weakest
+    if not profile.advised_recently(weakest.parameter):
+        return weakest
+
+    alternatives = sorted(
+        (s for s in assessed if s.parameter != weakest.parameter and s.value < 5),
+        key=lambda s: s.value,
+    )
+    for candidate in alternatives:
+        if not profile.advised_recently(candidate.parameter):
+            return candidate
+    return weakest
+
+
 def build_feedback(
     graded: GradedSubmission,
     rubric: Rubric,
     *,
     trend: Optional[TrendLabel] = None,
+    profile=None,
 ) -> StudentMessage:
-    """Compose the student-facing note in English and Hindi."""
+    """Compose the student-facing note in English and Hindi.
+
+    When a ``StudentProfile`` is supplied the note is personalised against the
+    student's *own* history — naming a parameter they have improved on, and not
+    repeating advice they have just been given. Never against other students.
+    """
     en: list[str] = []
     hi: list[str] = []
 
@@ -104,18 +140,28 @@ def build_feedback(
     best, weakest = _best_and_weakest(graded.video, graded.note)
 
     # 2. One specific strength, named first — never generic praise.
+    #    If the student has beaten their own recent average on this, say so:
+    #    "better than you were doing" lands harder than "good".
     if best is not None and best.parameter in _STRENGTH:
         s_en, s_hi = _STRENGTH[best.parameter]
-        en.append(f"Good work — {s_en}.")
-        hi.append(f"अच्छा काम — {s_hi}।")
+        if profile is not None and profile.improving_on(best.parameter, best.value):
+            en.append(f"Better than last time — {s_en}.")
+            hi.append(f"पिछली बार से बेहतर — {s_hi}।")
+        else:
+            en.append(f"Good work — {s_en}.")
+            hi.append(f"अच्छा काम — {s_hi}।")
 
     # 3. One concrete next step, phrased as an action.
     #    Only when there is genuine room to improve: telling a student scoring
     #    5/5 to fix something is noise.
-    if weakest is not None and weakest.value < 5 and weakest.parameter in _NEXT_STEP:
-        n_en, n_hi = _NEXT_STEP[weakest.parameter]
+    assessed = list(graded.video.assessed_scores) + list(graded.note.assessed_scores)
+    step = _pick_next_step(weakest, assessed, profile)
+    if step is not None and step.value < 5 and step.parameter in _NEXT_STEP:
+        n_en, n_hi = _NEXT_STEP[step.parameter]
         en.append(f"Next time, {n_en}.")
         hi.append(f"अगली बार, {n_hi}।")
+        # Remembered so next week's note does not repeat it.
+        graded.extras["advised_on"] = step.parameter
 
     # 4. Trend, as a sentence rather than a badge.
     t_en, t_hi = trend_phrase(trend)

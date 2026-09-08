@@ -96,11 +96,13 @@ class TestEndToEndBatch(unittest.TestCase):
         self.assertIn("could not hear", g.feedback.en)
         self.assertTrue(g.flagged_for_teacher)
 
-    def test_forgotten_note_is_not_a_zero_and_the_student_is_told(self):
+    def test_forgotten_note_scores_zero_and_the_student_is_asked_for_it(self):
         g = self._grade("sub-003")
         self.assertTrue(g.note.missing)
-        self.assertEqual(g.overall_rating, g.video.rating)
+        self.assertEqual(g.note.rating, 0.0)
+        self.assertEqual(g.overall_rating, round(g.video.rating * 0.5, 2))
         self.assertTrue(g.incomplete)
+        # A 0 is only fair if the student is plainly told what to do about it.
         self.assertIn("did not upload your handwritten note", g.feedback.en)
 
     def test_unreadable_rows_abstain_but_a_wrong_answer_still_counts(self):
@@ -133,7 +135,7 @@ class TestEndToEndBatch(unittest.TestCase):
         g = self._grade("sub-real-001")
         self.assertTrue(g.note.was_graded)
         self.assertTrue(g.video.missing)
-        self.assertEqual(g.overall_rating, g.note.rating)
+        self.assertEqual(g.overall_rating, round(g.note.rating * 0.5, 2))
         self.assertTrue(g.incomplete)
         # 15 of 15 vocabulary rows attempted and correct.
         completion = next(s for s in g.note.scores if s.parameter == "completion")

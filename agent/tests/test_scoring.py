@@ -106,13 +106,30 @@ class TestOverall(unittest.TestCase):
         self.assertEqual(overall, 3.0)
         self.assertFalse(incomplete)
 
-    def test_missing_note_does_not_score_as_zero(self):
-        """The critical case: a student who forgot the note is not given 2/5."""
+    def test_a_note_never_uploaded_scores_zero(self):
+        """Policy set by WES, 07 Sep 2026: work not done scores 0.
+
+        This is the ONLY route by which a 0 enters an overall rating. It is a
+        fact about the homework, not a judgement we could not make — contrast
+        the next test, where the note WAS uploaded and we failed to read it.
+        """
         video = self._graded(ArtifactKind.VIDEO, 4)
         note = build_artifact_result(ArtifactKind.NOTE, missing=True)
         overall, incomplete = combine_overall(video, note, self.rubric)
-        self.assertEqual(overall, 4.0)   # not 2.0
+        self.assertEqual(overall, 2.0)          # 4 and 0, blended 50/50
         self.assertTrue(incomplete)
+        self.assertTrue(note.counts_as_zero)
+        self.assertFalse(note.was_graded)
+
+    def test_an_unreadable_note_is_never_zero(self):
+        """The line that must not move: our failure is not the student's 0."""
+        video = self._graded(ArtifactKind.VIDEO, 4)
+        note = build_artifact_result(
+            ArtifactKind.NOTE, cannot_evaluate=CannotEvaluateReason.UNREADABLE_IMAGE)
+        overall, incomplete = combine_overall(video, note, self.rubric)
+        self.assertEqual(overall, 4.0)          # not 2.0
+        self.assertTrue(incomplete)
+        self.assertFalse(note.counts_as_zero)
 
     def test_unevaluable_video_falls_back_to_note(self):
         video = build_artifact_result(
