@@ -1,4 +1,4 @@
-# AI-Powered Homework Grading Agent
+# EduGrade AI
 
 An agent that evaluates student homework submitted through the WesFellow Hub
 learning portal, checks it against the module it was set for, and writes feedback
@@ -8,11 +8,29 @@ Built for Wazir Education Society.
 
 ---
 
-## What is here so far
+## Where things live
 
-One notebook: **`handnote/Handnote_Feedback.ipynb`**. It handles the handwritten
-page — reads the module, reads the student's page, checks one against the other,
-and writes the feedback. Video comes later.
+```
+Hackhathon _EduGrade AI/    the code — one notebook
+Module/                     module screenshots and text
+Homework/handnotes/         photographs of student pages
+Homework/videos/            student recordings
+```
+
+The three sample folders are in `.gitignore`. They hold real children's work and
+none of it belongs in a shared repository — only the empty folders are committed,
+so the structure is there when someone clones it. Put your own copies in locally.
+
+**No code in this repository reads `Homework/videos/`.** Video and face frames of
+a minor never reach the model. That is a deliberate line rather than an
+oversight: if video grading is built later, frames are sampled and scored on our
+own machine, and only the resulting numbers move forward.
+
+## What is here
+
+One notebook: **`Handnote_Feedback.ipynb`**. It handles the handwritten page —
+reads the module, reads the student's page, checks one against the other, and
+writes the feedback. Video comes later.
 
 Five steps. Two of them use a model, and both are labelled in the notebook.
 
@@ -56,8 +74,8 @@ photograph is our problem, not the student's, and must never produce a low mark.
 python -m pip install openai-agents python-dotenv
 ```
 
-**2. Add your API key.** Create a file called `.env` inside `handnote/`, with one
-line:
+**2. Add your API key.** Create a file called `.env` next to the notebook, with
+one line:
 
 ```
 OPENAI_API_KEY=sk-...
@@ -66,14 +84,19 @@ OPENAI_API_KEY=sk-...
 `.env` is gitignored and must stay that way. A key committed once is in the
 history forever.
 
-**3. Supply an image.** Step 3 points at `samples/handnote_2.png`. That folder is
-deliberately **not** in this repository — it held a real child's homework page.
-Put your own photograph somewhere and change the `HANDNOTE` path in step 3.
+**3. Supply an image.** Put a photograph of a handwritten page into
+`Homework/handnotes/`, then point `HANDNOTE` in step 3 at it:
+
+```python
+HANDNOTE = "../Homework/handnotes/your_page.png"
+```
+
+Those files are gitignored, so they stay on your machine.
 
 **4. Run it**
 
 ```powershell
-cd handnote
+cd "Hackhathon _EduGrade AI"
 jupyter notebook Handnote_Feedback.ipynb
 ```
 
@@ -96,8 +119,8 @@ one lives in Supabase, in `wes_scheduled_tasks` (`title`, `description`).
 **No video yet.** The submission also carries a recording of the student reading
 aloud. Not handled here.
 
-**No teacher screen yet.** `handnote/ui_preview.png` shows the intended layout —
-verdict first, then the findings, then an editable feedback box. Not built.
+**No teacher screen yet.** `ui_preview.png` shows the intended layout — verdict
+first, then the findings, then an editable feedback box. Not built.
 
 ---
 

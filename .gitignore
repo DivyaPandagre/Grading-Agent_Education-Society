@@ -1,6 +1,12 @@
 ﻿.env
 .env.*
-samples/
-pipeline_data/
+.vs/
 __pycache__/
 .ipynb_checkpoints/
+
+Module/*
+!Module/.gitkeep
+Homework/handnotes/*
+!Homework/handnotes/.gitkeep
+Homework/videos/*
+!Homework/videos/.gitkeep
