@@ -1,116 +1,92 @@
-# AI-Powered Homework Grading Agent
+# EduGrade AI
 
-An agent that evaluates student homework submitted through the WesFellow Hub
-learning portal, checks it against the module it was set for, and writes feedback
-in English and Hindi for a teacher to review.
+EduGrade AI is a hackathon-ready assessment agent that evaluates student work
+against an instructor rubric, generates personalized feedback, calculates an
+explainable confidence score, and routes uncertain results through educator review.
 
-Built for Wazir Education Society.
+## Demo capabilities
 
----
+- Rubric-based scoring with criterion-level rationale and evidence
+- Strengths, learning gaps, personalized feedback, and recommendations
+- Confidence-based review routing
+- Educator edit, approve, and override actions
+- Persistent audit trail for responsible AI governance
+- Responsive local web interface with a built-in demo assignment
+- Strict media boundary: raw video is processed outside the grading model; only
+  a sanitized transcript and processing receipt enter the assessment agent
+- Collapsible owner Agent Inspector showing execution stages and every
+  Responsible AI control invoked during an assessment
 
-## What is here so far
+## Deployment and Microsoft sign-in
 
-One notebook: **`handnote/Handnote_Feedback.ipynb`**. It handles the handwritten
-page — reads the module, reads the student's page, checks one against the other,
-and writes the feedback. Video comes later.
+The local FastAPI application can be deployed as an HTTPS web app to Azure App
+Service or Azure Container Apps. Microsoft Entra ID authentication should be
+enabled at the hosting layer. Admin, teacher, student, and owner-inspector access
+must be authorized server-side using Entra app roles or security groups. The
+inspector is labeled local-owner-only in the MVP and must not be exposed in a
+shared deployment until that authorization policy is active.
 
-Five steps. Two of them use a model, and both are labelled in the notebook.
+## Responsible media architecture
 
-| Step | What it does | Needs the API key |
-|---|---|---|
-| 1 | Setup | no |
-| 2 | The module — title, instruction, answer key | no |
-| 3 | Read the handwriting off the photo | **yes** |
-| 4 | Check what was read against the module | no |
-| 5 | Write the feedback | **yes** |
+For video assignments, parent consent is captured once during first-login
+registration. A separate media service performs permission validation, malware
+scanning, audio extraction, speech-to-text/OCR, and personal-data sanitization.
+The grading agent receives only the resulting transcript and a processing receipt.
+Raw video is never included in the Azure model request.
 
-**Step 4 is where every decision is made, and it uses no AI.** The model reads
-and writes; plain code counts and compares. That split is deliberate — a teacher
-can argue with a number that came from counting, and the feedback writer is given
-the findings only, never the answer key, so nothing it says can move a mark.
+## Run locally
 
-## The three outcomes
+1. Create and activate a virtual environment:
 
-Step 4 reaches one of three verdicts, and the feedback differs completely
-depending on which.
+   ```powershell
+   python -m venv .venv
+   .\.venv\Scripts\Activate.ps1
+   ```
 
-**Marked against the module** — how many words were written, how many Hindi
-meanings match the key, and one thing to work on next.
+2. Install dependencies:
 
-**A different module's homework** — the page header names another task. Nothing
-is marked, nothing is marked *down*, and the student is told to ask their teacher
-to move it to the right slot. This check runs **before** the marking on purpose:
-scoring a page against an answer key it was never meant for produces a near-zero
-for work the child did correctly.
+   ```powershell
+   pip install -r requirements.txt
+   ```
 
-**Not readable, or not a homework page** — no scores at all. An unreadable
-photograph is our problem, not the student's, and must never produce a low mark.
+3. Copy `.env.example` to `.env` and provide the Azure values:
 
----
+   ```powershell
+   Copy-Item .env.example .env
+   ```
 
-## Running it
+   Use the Foundry OpenAI-compatible endpoint, such as
+   `https://<resource>.services.ai.azure.com/openai/v1`, plus the deployment
+   name. The app uses the OpenAI `Responses API`. Do not commit `.env`.
 
-**1. Install the two packages**
+   To enter the API key through a hidden local prompt and store it in Windows
+   Credential Manager:
+
+   ```powershell
+   .\configure-key.ps1
+   ```
+
+   The key is not written to `.env`, source code, logs, or terminal output.
+
+4. Start the application:
+
+   ```powershell
+   uvicorn app.main:app --reload
+   ```
+
+5. Open `http://127.0.0.1:8000` in a browser tab and select **Load demo**.
+
+## Validate
 
 ```powershell
-python -m pip install openai-agents python-dotenv
+pip install -r requirements-dev.txt
+pytest -q
 ```
 
-**2. Add your API key.** Create a file called `.env` inside `handnote/`, with one
-line:
+## Hackathon demo flow
 
-```
-OPENAI_API_KEY=sk-...
-```
-
-`.env` is gitignored and must stay that way. A key committed once is in the
-history forever.
-
-**3. Supply an image.** Step 3 points at `samples/handnote_2.png`. That folder is
-deliberately **not** in this repository — it held a real child's homework page.
-Put your own photograph somewhere and change the `HANDNOTE` path in step 3.
-
-**4. Run it**
-
-```powershell
-cd handnote
-jupyter notebook Handnote_Feedback.ipynb
-```
-
-Steps 1, 2 and 4 run with no key. Steps 3 and 5 call the model and need credit on
-the OpenAI account — reading one page costs roughly a cent.
-
----
-
-## Known gaps
-
-**The answer key is incomplete.** The Day 12 module lists 20 tough words; the
-screenshot it was copied from cuts off after the 11th. Step 4 therefore refuses
-to report a completeness percentage — against 11 it would flatter the student,
-against 20 it would penalise them. Add the remaining nine and that check switches
-on.
-
-**The module is hardcoded.** Step 2 holds the Day 12 task as a literal. The real
-one lives in Supabase, in `wes_scheduled_tasks` (`title`, `description`).
-
-**No video yet.** The submission also carries a recording of the student reading
-aloud. Not handled here.
-
-**No teacher screen yet.** `handnote/ui_preview.png` shows the intended layout —
-verdict first, then the findings, then an editable feedback box. Not built.
-
----
-
-## Notes for whoever picks this up
-
-The database is Supabase. Two tables matter: `wes_scheduled_tasks` holds the
-modules, and `student_task_feedback` holds both the submission links and the
-teacher's own past feedback in `feedback_notes`.
-
-That second one is the interesting one. Teachers there don't score homework out
-of five — they verify or reject it and write a note. So there is a real history of
-accept/reject decisions to check the agent's verdicts against, and a large body of
-real teacher wording to learn the tone from.
-
-When selecting from `students`, take `id`, `student_id`, `name` and `class_id`
-only. That table also holds `dob`, `bank_name`, `account_number` and `ifsc_code`.
+1. Load the sample water-cycle assignment.
+2. Run the AI evaluation and explain criterion-level evidence.
+3. Highlight the confidence score and automatic review gate.
+4. Edit the grade or feedback, then approve or override it.
+5. Show the audit trail as evidence of educator control and responsible AI.
