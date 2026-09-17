@@ -77,7 +77,11 @@ nav { display: grid; gap: 8px; }
   box-shadow: 18px 0 45px rgba(16,40,28,.13); transition: transform .25s ease;
   overflow-y: auto;
 }
-.trace-panel.collapsed { transform: translateX(-100%); box-shadow: none; }
+.trace-panel.collapsed {
+  transform: translateX(-100%);
+  box-shadow: none;
+  pointer-events: none;
+}
 .trace-header { display: flex; justify-content: space-between; align-items: center; }
 .trace-header h3 { margin: 5px 0; }
 .trace-header button { width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 8px; background: white; }
