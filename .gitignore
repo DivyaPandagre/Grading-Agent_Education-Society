@@ -1,0 +1,6 @@
+﻿.env
+.env.*
+samples/
+pipeline_data/
+__pycache__/
+.ipynb_checkpoints/
