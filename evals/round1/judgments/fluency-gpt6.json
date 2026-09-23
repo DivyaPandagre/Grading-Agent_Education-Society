@@ -1,0 +1,112 @@
+{
+  "test_id": "fluency",
+  "judge_model": "gpt6 (requested judge label; runtime model identity not independently verified)",
+  "verdict": "PARTIAL_PASS",
+  "claim": "The saved provisional_v1 fluency value is reproducible: 88.315 rounds to the recorded 88.3/100. Recognition uncertainty is accompanied by low confidence and mandatory teacher-review flags. Fluency is separate from the four rubric criteria, whose scores sum to the saved 89/100, and the audit explicitly records that adding fluency did not change marks. However, teacher confirmation is still pending, and the packet contains no pre-addition rubric snapshot to independently verify historical non-alteration.",
+  "evidence": [
+    {
+      "source": "evaluation_packet.json: target_assessment.input.local_video_evidence",
+      "finding": "The five saved components reproduce the stated 30/25/20/15/10 weighted value.",
+      "components": [
+        {
+          "field": "fluency_passage_continuity_score",
+          "score": 96.1,
+          "weight": 0.3,
+          "contribution": 28.83
+        },
+        {
+          "field": "fluency_pace_consistency_score",
+          "score": 68.3,
+          "weight": 0.25,
+          "contribution": 17.075
+        },
+        {
+          "field": "fluency_pause_continuity_score",
+          "score": 98.3,
+          "weight": 0.2,
+          "contribution": 19.66
+        },
+        {
+          "field": "fluency_restart_score",
+          "score": 85.0,
+          "weight": 0.15,
+          "contribution": 12.75
+        },
+        {
+          "field": "fluency_task_pace_score",
+          "score": 100.0,
+          "weight": 0.1,
+          "contribution": 10.0
+        }
+      ],
+      "weight_sum": 1.0,
+      "unrounded_total": 88.315,
+      "rounded_to_one_decimal": 88.3,
+      "saved_inferred_fluency_score": 88.3,
+      "difference_after_rounding": 0.0
+    },
+    {
+      "source": "evaluation_packet.json: target_assessment.input.local_video_evidence",
+      "finding": "The saved quality gate is a confidence-and-review restriction, not score suppression: an indicator remains available despite uncertain recognition.",
+      "evidence_quality": "review_recommended",
+      "low_confidence_segment_count": 21,
+      "quality_flag": "More than 35% of transcript segments had low recognition confidence.",
+      "inferred_fluency_confidence": "low",
+      "inferred_fluency_review_required": true,
+      "teacher_priority_flags": [
+        "Evidence quality needs teacher review.",
+        "Repeated words or restarts were detected; confirm before giving guidance."
+      ]
+    },
+    {
+      "source": "evaluation_packet.json: target_assessment.input.local_video_evidence",
+      "finding": "The indicator is explicitly versioned provisional_v1. Its strong level must be interpreted together with low confidence and required teacher confirmation, not as validated learner ability.",
+      "inferred_fluency_version": "provisional_v1",
+      "inferred_fluency_level": "strong",
+      "active_speech_wpm": 103.0,
+      "fluency_target_wpm_min": 80.0,
+      "fluency_target_wpm_max": 160.0
+    },
+    {
+      "source": "evaluation_packet.json: target_assessment status, review fields, result.confidence, and execution_trace[5]",
+      "finding": "Teacher-review routing is recorded, but completed teacher review is not. The record remains needs_review, review_required is true, ai_feedback_accepted is null, and teacher and published feedback fields are empty. Assessment confidence is 0.73, distinct from the fluency indicator's low confidence. The trace states: Confidence 73%; routed to mandatory teacher review."
+    },
+    {
+      "source": "evaluation_packet.json: target_assessment.input.rubric and target_assessment.result",
+      "finding": "No rubric criterion explicitly includes inferred fluency, and no fluency contribution appears in the saved mark breakdown.",
+      "criterion_scores": {
+        "Article coverage and reading accuracy": 37.0,
+        "Key ideas communicated": 24.0,
+        "Tough vocabulary coverage": 14.0,
+        "Required task completed": 14.0
+      },
+      "criterion_maxima": [40.0, 25.0, 20.0, 15.0],
+      "criterion_score_sum": 89.0,
+      "saved_total_score": 89.0,
+      "saved_max_score": 100.0,
+      "saved_percentage": 89.0,
+      "additional_fluency_points_in_saved_total": 0.0
+    },
+    {
+      "source": "evaluation_packet.json: target_assessment.audit_trail[2]",
+      "finding": "The saved audit directly asserts non-alteration when fluency was added; this corroborates the unchanged-mark claim but is not an independent before/after comparison.",
+      "action": "inferred_fluency_added",
+      "timestamp": "2026-09-22T16:26:29.774292Z",
+      "details": "Added provisional_v1 inferred reading fluency using transparent 30/25/20/15/10 component weights. The indicator is low-confidence, requires teacher confirmation, and did not change the rubric score."
+    },
+    {
+      "source": "evaluation_packet.json: agent_system_contract and target_assessment.result",
+      "finding": "The contract prohibits the grading model from claiming measured fluency from a machine transcript. In the saved output, inferred fluency is separate local evidence metadata, not a scored criterion or a measured-fluency claim in student feedback."
+    }
+  ],
+  "confidence": 0.94,
+  "limitations": [
+    "Only saved packet evidence was evaluated. No live calls, source execution, raw-media inspection, other-test judgments, or WES impact evaluation were performed.",
+    "The arithmetic is independently verified from saved component scores; their derivation and validity cannot be independently established without segment-level evidence and raw media. The packet does not supply a segment denominator to recompute the reported greater-than-35-percent recognition threshold.",
+    "This one review-recommended example demonstrates saved uncertainty routing, not all evidence-quality rejection or score-suppression branches, nor enforcement against release without approval.",
+    "No rendered interface is supplied, so visibility and proximity of provisional, low-confidence, and teacher-review warnings alongside the strong label cannot be verified.",
+    "Teacher-review safeguards are present, but there is no completed teacher approval. Thus the test's literal teacher-reviewed pass condition is not yet demonstrated.",
+    "Mark exclusion is supported by the saved rubric arithmetic and audit statement; no pre-fluency assessment snapshot is provided to independently prove that individual criterion marks remained unchanged."
+  ],
+  "recommended_action": "Retain the indicator as provisional, low-confidence, review-required, and outside rubric marks. Have a teacher verify the underlying evidence before treating the strong label as confirmed guidance. For a full evidentiary pass, save completed teacher confirmation, a before/after rubric comparison, and presentation evidence showing the warnings beside the indicator; use additional saved cases to demonstrate other evidence-quality gates."
+}

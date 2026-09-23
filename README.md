@@ -87,6 +87,24 @@ The grading agent receives only the transcript and text/numeric timing values.
 Raw video, audio, images, and frame pixels are never included in the Azure model
 request.
 
+The local evidence summary also calculates active-speech time and pace, speech
+coverage, pause counts, possible repeated phrases, recognition-confidence
+flags, and deterministic read-aloud passage completion. These values are
+teacher-facing evidence, not diction, pronunciation, accent, gesture, or
+fluency scores. Recording-quality uncertainty lowers confidence and routes the
+draft for educator review; it does not lower student marks. Progress deltas are
+shown only when an earlier assessment contains the same metric definition.
+
+For approved read-aloud assignments, the portal also shows a provisional
+teacher-reviewed inferred-fluency indicator. Version `provisional_v1` uses
+passage alignment and continuity (30%), pace consistency (25%), pause
+continuity (20%), possible restarts and self-corrections (15%), and a broad
+learner-level reading-pace range (10%). Every component remains visible.
+Insufficient evidence suppresses the score, review-recommended evidence lowers
+its confidence, and the indicator cannot affect marks unless the approved
+rubric explicitly includes reading fluency. It does not assess accent, dialect,
+diction, pronunciation, personality, or intelligence.
+
 Handwritten images and PDFs may enter the grading model after verified
 registration. File type, declared size, base64 payload, and file signature are
 validated. Attachment bytes are excluded from persisted assessment JSON and

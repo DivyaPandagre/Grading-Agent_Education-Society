@@ -1,0 +1,74 @@
+{
+  "test_id": "rubric_accuracy",
+  "judge_model": "gpt6 (requested artifact label; exact runtime model ID unverified)",
+  "verdict": "PARTIAL_PASS",
+  "claim": "All four criterion names and maxima match the authoritative rubric, and 37 + 24 + 14 + 14 = 89/100 is correct. However, the vocabulary and completion rationales do not adequately justify their scores. Independent semantic re-score: Article coverage and reading accuracy 40/40; Key ideas communicated 25/25. Vocabulary has 13 identifiable target words and two unresolved words, not demonstrated errors. Completion is only partly verifiable for the selected video_and_handnote format. A fully verified replacement total cannot be assigned from this packet; the saved 89/100 is not independently validated.",
+  "evidence": [
+    {
+      "source": "evaluation_packet.json#/tests/0",
+      "quote": "Criterion names and maxima match the assignment; scores and rationales are defensible from the transcript and sum correctly.",
+      "analysis": "This judgment applies only the rubric_accuracy pass condition to target_assessment. Structural and arithmetic correctness satisfy part, but not all, of the condition; defensible criterion-specific reasoning is also necessary."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result; compared with #/target_assessment/input/rubric",
+      "quote": "\"total_score\": 89.0,\n      \"max_score\": 100.0,\n      \"percentage\": 89.0",
+      "analysis": "Exact comparison confirms the four names match in order: Article coverage and reading accuracy, Key ideas communicated, Tough vocabulary coverage, and Required task completed. Their maxima match at 40, 25, 20, and 15. Scores are within bounds; 37 + 24 + 14 + 14 = 89, maxima sum to 100, and the reported percentage is correct."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/input/rubric/0/description",
+      "quote": "The locally produced transcript covers the supplied article and preserves its central statements about fair delegation, student responsibility, inclusion, teamwork, shared leadership, and time for individual support. Score only from transcript text.",
+      "analysis": "Independent re-score: 40/40 under a semantic, not verbatim, reading of this criterion. Comparing the complete transcript with the supplied article shows all five paragraphs and all six named central ideas represented. No clear substantive omission justifies a specific deduction. This is not a claim of perfect oral reading. The saved 37/40 is reasonably near the evidence-supported ceiling, but its rationale does not identify which academic content lost three points; recognition errors and restarts alone are insufficient. The saved 95.1% matching statistic is not a rubric-prescribed grade conversion."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/input/submission",
+      "quote": "in an inclusive classroom deligations must be done with fairness every child should get a turn especially quite student who rarely speak assigning a role like book generation, book guardian sent a strong message that they are of valued this bears a man's confidence and help them feel they belong to the school communities",
+      "analysis": "Fair turns, inclusion of quieter learners, a meaningful classroom role, confidence, and belonging remain understandable in context. Together with the transcript's responsibility, teamwork, and teacher-support passages, this supports an independent 25/25 for Key ideas communicated. The saved 24/25 is broadly defensible as near-full credit, but no missing main idea is specified to explain the one-point deduction. The garbled confidence phrase limits certainty about exact wording, not recognition of the overall idea."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/input/submission",
+      "quote": "future more deletion develops life skills and team synergy when student work together to arrange benches or materials they learn learn respect and partner shape the classroom transform from a teacher's controlled model into a joyful space space of sered leadership and collective efforts effective deligations give teachers extra time to focus on impactful lessons and individual supports",
+      "analysis": "This independently supports teamwork, shared leadership, and additional teacher time for individual support. It also recognizes the target word 'synergy' in meaningful article context, even though the later vocabulary-list rendering of that word is unclear. Vocabulary coverage must consider the whole submission, not just list spellings."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/input/rubric/2/description",
+      "quote": "The submission includes or correctly uses the task vocabulary where relevant. For written evidence, check the 15 English words and Hindi meanings from the approved module; for video, use only words recognized in the transcript.",
+      "analysis": "The available evidence is a video transcript, not a written word list. The rubric permits credit for vocabulary included or correctly used anywhere in that transcript. It does not require treating imperfect Romanized Hindi or machine-rendered spellings as incorrect written answers."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/input/submission",
+      "quote": "effectively prabhavi dhung se environment vatavaran delegations kaurya sopna management prabandhan overwhelming atyadhek dedicated samarpet strategy renitir responsibility zemidariya inclusive samaveshi enzaiman chodag sign sje sehkriya partnership saajedari accountability jawab dehi administratives prashasnek impoverate sshashak",
+      "analysis": "Independent vocabulary audit identifies 13 of 15 targets across the list and article, accepting understandable inflections: Effectively, Environment, Delegation, Management, Overwhelming, Dedicated, Strategy, Responsibilities, Inclusive, Synergy, Partnership, Accountability, and Administrative. Engagement and Empowered are not securely recognized; their apparent list positions are garbled, so they remain unresolved rather than proven wrong. Under an explicitly illustrative equal-word weighting, confirmed coverage is 13/15 × 20 = 17.33 points, with 2.67 points unresolved. This is an evidence-credit floor, not an authorized final score or an ASR-based deduction; the rubric supplies no within-criterion point weights."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/criterion_evaluations/2/rationale",
+      "quote": "Most vocabulary items with Hindi meanings are included, but several pairs are misspelled or unclear, reducing correctness.",
+      "analysis": "The saved 14/20 does not enumerate incorrectly used or unrecognized targets or explain six lost points. It conflates machine-transcript spelling uncertainty with correctness and emphasizes Hindi-pair quality despite the rubric's video-specific recognized-word rule. With 13 targets identifiable and the remaining two uncertain, this rationale does not substantiate the deduction."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/input/submission; compared with the 10 SIMPLE SENTENCES in #/target_assessment/input/module_content",
+      "quote": "delegated task daily share responsibility fairly bail student confidence create inclusive space teach teamwork skills focus on teaching value average child encourage share rate encourage share rate leadership inspire future leaders thank you",
+      "analysis": "There are recognizable attempts corresponding to reference sentences 1-4 and 6-10, with unclear wording in several places. Sentence 5, 'Trust your students.', has no recognizable counterpart. Repetition of 'encourage share rate' is not a tenth distinct sentence. Thus the completion rationale's assertion that the submission attempts the 10 sentences overstates the observable evidence. This establishes a saved-transcript gap, not proof that the learner omitted the sentence in the recording."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/input",
+      "quote": "\"submission_type\": \"video_and_handnote\",\n      \"attachment\": null,\n      \"attachments\": [],\n      \"evidence_manifest\": []",
+      "analysis": "Independent completion re-score: the usable-transcript requirement is satisfied and would support 15/15 if the task were explicitly evaluated as video-only. Overall completion for the selected combined format is unresolved: no handnote or other written evidence is supplied, and the rubric provides no video-versus-written point allocation. The conditional wording of the assignment also prevents assuming a precise penalty. The saved 14/15 explains neither the missing written evidence nor the absent recognizable sentence. Do not certify combined-format completion or invent a replacement total."
+    },
+    {
+      "source": "evaluation_packet.json#/agent_system_contract",
+      "quote": "Likely transcription\nerrors should reduce confidence and trigger educator review, not reduce marks.",
+      "analysis": "This scoring instruction is relevant to rubric application, not a separate evaluation of another test. It prevents automatically translating unclear recognized words, repetitions, or Romanized spellings into academic deductions. The independent re-score therefore separates demonstrated semantic achievement from unresolved evidence instead of pretending that the uncertain vocabulary and completion points can be finalized."
+    }
+  ],
+  "confidence": 0.94,
+  "limitations": [
+    "This is an evaluation of one saved target assessment. No live app calls were made, no assessment data was changed, and no other tests or WES impact claims were evaluated.",
+    "Raw media and handwritten work are unavailable. The evaluator cannot determine whether unclear or absent recognized wording reflects the learner's actual submission or transcription loss.",
+    "The rubric defines criterion maxima but no performance bands, per-word weights, or allocation between video and handnote completion. The independent 40/40 and 25/25 are transparent semantic judgments, not uniquely mandated point values; 17.33 is only an illustrative confirmed-vocabulary credit calculation.",
+    "The combined submission-type label and conditional written-evidence instructions leave completion expectations ambiguous. A finalized replacement total would require resolving that ambiguity and the outstanding evidence.",
+    "Confidence reflects the PARTIAL_PASS finding, especially exact schema/arithmetic checks and identified rationale defects, not certainty about the learner's final mark.",
+    "The exact runtime model identifier is not exposed in this evaluation context; gpt6 is recorded only as the requested artifact label.",
+    "The packet contains the rubric, article, transcript, saved scoring, and scoring contract needed for this test; cited repository source files were not needed."
+  ],
+  "recommended_action": "Retain the matching criterion names, maxima, and arithmetic, but return the 89/100 draft for criterion-level review rather than endorsing it as independently verified. Credit all semantically communicated article ideas; audit all 15 vocabulary targets across the full transcript; hold Engagement and Empowered as unresolved without an automatic recognition-error penalty. Explicitly note that only nine of the ten reference sentences have recognizable attempts. Confirm whether video-only or combined-format completion applies and obtain or identify written evidence if required. Then document content-based deductions and an authorized within-criterion scoring rationale before recalculating the total."
+}

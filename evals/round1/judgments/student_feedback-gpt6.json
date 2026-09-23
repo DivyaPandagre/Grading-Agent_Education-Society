@@ -1,0 +1,116 @@
+{
+  "test_id": "student_feedback",
+  "judge_model": "gpt6",
+  "verdict": "PARTIAL_PASS",
+  "claim": "The saved English and Romanized Hindi feedback are concise, respectful, substantially equivalent, and grounded in demonstrated article coverage. Their next steps are concrete but compound. Both versions imply confirmed learner errors without acknowledging substantial transcription uncertainty, and the specific instruction to correct the 'Book Guardian' line is not established by the saved transcript alone.",
+  "evidence": [
+    {
+      "dimension": "factual_consistency",
+      "assessment": "The central praise is supported in both languages.",
+      "sources": [
+        "target_assessment.result.personalized_feedback",
+        "target_assessment.result.personalized_feedback_hi",
+        "target_assessment.input.submission"
+      ],
+      "quotes": [
+        "You covered the article well, including fairness, teamwork, and teacher time for support.",
+        "Aapne lekh ke mukhya vichar jaise nyaaypoorna delegation, teamwork aur shikshak ke liye adhik samay achchhi tarah shamil kiye.",
+        "every child should get a turn",
+        "growth, responsibility and teamwork",
+        "effective deligations give teachers extra time to focus on impactful lessons and individual supports"
+      ],
+      "finding": "The recognized content supports praise for fair delegation, teamwork, and additional teacher time. Hindi preserves the English message, although it does not explicitly repeat 'for support'. Neither version invents a new demonstrated strength."
+    },
+    {
+      "dimension": "actionability",
+      "assessment": "Concrete but not a single focused next action.",
+      "sources": [
+        "target_assessment.result.personalized_feedback",
+        "target_assessment.result.personalized_feedback_hi",
+        "target_assessment.input.module_content"
+      ],
+      "quotes": [
+        "submit a clear, corrected list of the 15 word-meaning pairs and the 10 sentences, and reread the 'Book Guardian' line accurately",
+        "15 shabd-arth aur 10 vaakyon ki sahi, saaf suchi jama karein aur ‘Book Guardian’ wali pangti ko theek se dobara padhein"
+      ],
+      "finding": "Both versions specify an observable written deliverable matching the module's required counts. They also add a separate rereading task, rather than prioritizing one next step, and do not identify which vocabulary pairs need confirmation."
+    },
+    {
+      "dimension": "brevity",
+      "assessment": "Meets the concision requirement in both languages.",
+      "sources": [
+        "target_assessment.result.personalized_feedback",
+        "target_assessment.result.personalized_feedback_hi"
+      ],
+      "observations": {
+        "english_whitespace_word_count": 35,
+        "hindi_whitespace_word_count": 42,
+        "structure": "Each version contains two sentences: praise followed by next steps."
+      },
+      "finding": "Neither version is padded with generic commentary. Romanized Hindi includes familiar English terms; its script alone is not a failure because no Devanagari requirement is stated."
+    },
+    {
+      "dimension": "respectful_language",
+      "assessment": "Meets the respectful-language requirement in both languages.",
+      "sources": [
+        "target_assessment.result.personalized_feedback",
+        "target_assessment.result.personalized_feedback_hi"
+      ],
+      "quotes": [
+        "You covered the article well",
+        "Aapne",
+        "jama karein",
+        "dobara padhein"
+      ],
+      "finding": "Feedback recognizes achievement and uses task-focused, courteous instructions. It contains no harmful personal labels, ridicule, or judgments about intelligence, accent, identity, or character."
+    },
+    {
+      "dimension": "uncertainty_handling",
+      "assessment": "Does not meet the uncertainty requirement in either learner-facing version.",
+      "sources": [
+        "target_assessment.input.local_video_evidence.quality_flags",
+        "target_assessment.input.local_video_evidence.teacher_priority_flags",
+        "target_assessment.result.confidence",
+        "target_assessment.result.personalized_feedback",
+        "target_assessment.result.personalized_feedback_hi"
+      ],
+      "quotes": [
+        "More than 35% of transcript segments had low recognition confidence.",
+        "Repeated words or restarts were detected; confirm before giving guidance.",
+        "many recognition errors and repetitions were flagged, so educator verification is advisable",
+        "corrected list",
+        "reread the 'Book Guardian' line accurately",
+        "theek se dobara padhein"
+      ],
+      "finding": "Neither feedback version explains that unclear wording may be a transcription error or makes correction conditional on verification. The assessment's separate confidence explanation and review requirement mitigate this concern but do not put the necessary qualification into the student feedback."
+    },
+    {
+      "dimension": "alignment_to_demonstrated_gaps",
+      "assessment": "Partially aligned; unclear recognized text is not proof of a learner mistake.",
+      "sources": [
+        "target_assessment.result.learning_gaps",
+        "target_assessment.input.submission",
+        "target_assessment.input.attachments",
+        "target_assessment.result.strengths",
+        "target_assessment.input.module_content"
+      ],
+      "quotes": [
+        "Several vocabulary pairs and simple sentences are misspelled or unclear (e.g., \"bail student confidence,\" \"administratives prashasnek\").",
+        "assigning a role like book generation, book guardian",
+        "Included the vocabulary segment and the 10 simple sentences within the transcript.",
+        "5. Trust your students."
+      ],
+      "finding": "Requesting a written vocabulary-and-sentence list can clarify the unclear recognized wording, but no attached written work establishes actual spelling errors. The transcript already includes 'book guardian' after 'book generation', so both languages' demand for an accurate rereading may target a self-correction or recognition artifact rather than a demonstrated gap. Separately, the supporting strengths text claims all ten simple sentences were included, although 'Trust your students' is not clearly represented; this completeness claim should be qualified, not treated as a confirmed learner omission."
+    }
+  ],
+  "confidence": 0.94,
+  "limitations": [
+    "Only the student_feedback test was judged, using the target assessment and its saved module, transcript, and feedback context. No other test or WES impact was evaluated, and no live calls were made.",
+    "Raw audio/video and handwritten evidence are unavailable. Actual pronunciation, reading accuracy, spelling, and whether apparently missing content was spoken cannot be established.",
+    "Teacher and published feedback fields are empty; this evaluates the saved AI draft, not a verified final student-facing release or its learning outcomes.",
+    "Hindi was evaluated as the saved Romanized Hindi text. Learner preferences and comprehension of this script were not tested.",
+    "Confidence describes confidence in this saved-text judgment, not confidence that the learner made the apparent errors.",
+    "The judge_model value uses the requested gpt6 label; an exact runtime deployment identifier was not exposed."
+  ],
+  "recommended_action": "Retain the supported praise in both languages. Replace the compound correction request with one uncertainty-aware next step: submit a written list of the 15 word-meaning pairs and 10 sentences so unclear transcript entries can be checked against the module. Explicitly state that transcription may have changed some words. Remove the mandatory 'Book Guardian' correction unless a teacher confirms an actual reading gap, and qualify the supporting claim that all ten sentences were included."
+}

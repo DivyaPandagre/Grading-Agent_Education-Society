@@ -1,0 +1,148 @@
+{
+  "test_id": "evidence_grounding",
+  "judge_model": "gpt-6",
+  "verdict": "PARTIAL_PASS",
+  "claim": "The saved assessment is substantially grounded but does not fully satisfy the evidence-grounding pass condition. All 10 evidence strings for the first three criteria are exact transcript substrings. The three completion-criterion strings are not: two are faithful, ordered excerpts joined with ellipses, and one contains a name different from the redacted transcript. The assessment explicitly acknowledges non-verbatim evidence in its 0.73 confidence rationale and uncertainty factors and requires review; these safeguards must be credited. However, the strength claiming inclusion of all 10 simple sentences overstates the saved transcript, which contains nine recognizable sentence attempts and no recognizable 'Trust your students' sentence. Some wording also treats uncertain transcript errors as correctness problems without establishing whether the learner or transcription caused them. The 95.1% figure is supported by saved alignment metadata, not independently reproducible as an alignment result from the transcript alone.",
+  "evidence": [
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/criterion_evaluations/0/evidence/0",
+      "quote": "every child should get a turn",
+      "analysis": "Exact, case-sensitive substring of input.submission. Its immediate context says delegation must be done with fairness. This supports the article-coverage rationale and the summary claim that the fairness theme was communicated."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/criterion_evaluations/0/evidence/1",
+      "quote": "joyful space space of sered leadership and collective efforts",
+      "analysis": "Exact transcript substring, including the repetition and 'sered' wording. Shared leadership and collective effort are reasonable contextual interpretations against the approved article. The evidence supports recognized content, not a finding about the learner's actual oral accuracy or the cause of the corrupted wording."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/criterion_evaluations/0/evidence/2",
+      "quote": "effective deligations give teachers extra time to focus on impactful lessons and individual supports",
+      "analysis": "Exact transcript substring. Directly supports the criterion rationale, first strength, and feedback statements about communicating teacher time and individual support. It establishes article content being recited, not an observed improvement in any classroom."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/criterion_evaluations/1/evidence/0",
+      "quote": "assigning a role like book generation, book guardian",
+      "analysis": "Exact transcript substring. The role example is present, with both a garbled phrase and the recognized 'book guardian' phrase. It supports topic coverage but cannot establish that the learner actually misread this line rather than the transcription misrecognizing it."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/criterion_evaluations/1/evidence/1",
+      "quote": "growth, responsibility and teamwork",
+      "analysis": "Exact transcript substring. Directly supports the responsibility and teamwork claims in the key-ideas rationale and article summary. Other transcript wording about arranging benches or materials and learning respect reinforces that interpretation."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/criterion_evaluations/1/evidence/2",
+      "quote": "help them feel they belong to the school communities",
+      "analysis": "Exact transcript substring. Direct support for the key-ideas rationale's belonging claim; no invention is necessary to make that interpretation."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/criterion_evaluations/2/evidence/0",
+      "quote": "effectively prabhavi dhung se",
+      "analysis": "Exact transcript substring. A recognizable English word and romanized Hindi meaning corresponding to the approved vocabulary item. This supports inclusion of a vocabulary-and-meaning segment, but transcript spelling is not evidence of the learner's written spelling."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/criterion_evaluations/2/evidence/1",
+      "quote": "environment vatavaran",
+      "analysis": "Exact transcript substring. A recognizable pairing consistent with the approved Environment meaning, supporting the vocabulary-coverage rationale."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/criterion_evaluations/2/evidence/2",
+      "quote": "accountability jawab dehi",
+      "analysis": "Exact transcript substring. A recognizable pairing consistent with the approved Accountability meaning. It supports inclusion, without proving correctness of all other vocabulary pairs."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/criterion_evaluations/2/evidence/3",
+      "quote": "administratives prashasnek",
+      "analysis": "Exact transcript substring. The intended Administrative pairing is plausible against the approved list, but its recognized form is imperfect. The vocabulary rationale's observation that some text is unclear is grounded; describing this as reduced learner correctness remains uncertain without the underlying recording or separate written evidence."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/criterion_evaluations/3/evidence/0",
+      "quote": "Anamika, today I am performing my task 71 TS",
+      "analysis": "Not an exact transcript substring. The saved transcript starts 'Learner, today I am performing my task 71 TS.' The task-identification clause is supported; the quoted name is not supported by this exact saved transcript. Because constraints.identifiers_redacted is true, this could be inconsistent redaction rather than model invention; its origin cannot be determined here. A usable 480-whitespace-word transcript is present, supporting that part of the completion rationale."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/criterion_evaluations/3/evidence/1",
+      "quote": "delegated task daily ... teach teamwork skills ... inspire future leaders",
+      "analysis": "Not one contiguous verbatim transcript string. All three fragments occur exactly and in this order in the sentence segment, so this is a faithful ellipsis-joined excerpt, not fabricated content. It supports attempting the sentence task, but neither this excerpt nor the complete transcript establishes inclusion of all 10 required sentences."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/criterion_evaluations/3/evidence/2",
+      "quote": "effectively prabhavi dhung se ... administratives prashasnek",
+      "analysis": "Not one contiguous verbatim transcript string. Both fragments occur exactly and in this order in the vocabulary segment. It is a supported abridgment, not an invented word-meaning pair, but it should be stored as separate exact spans if evidence validation requires verbatim strings."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/criterion_evaluations/0/rationale",
+      "quote": "The transcript closely follows the article with high coverage (95.1% reference match) and preserves core statements on fairness, shared leadership, and teacher time, despite noticeable recognition errors and restarts.",
+      "analysis": "The saved transcript follows the article from the opening rural-community context through delegation, inclusion, teamwork, teacher support, and the closing independent-leaders statement. This supports high thematic coverage and the first strength's 'nearly the entire article' characterization. The numeric 95.1% matches input.local_video_evidence.passage_completion_percentage and round(231/243*100, 1), using the saved matched/expected counts. It is therefore sourced to supplied local metadata, not invented by the assessment. No alignment trace or matching specification is supplied, so the 231 matches cannot be independently reproduced here, and this percentage is not proof of 95.1% reading correctness. Repetitions are visible; their acoustic cause and whether they are genuine restarts are not established by text alone."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/input/submission",
+      "quote": "every child should get a turn especially quite student who rarely speak assigning a role like book generation, book guardian sent a strong message that they are of valued this bears a man's confidence and help them feel they belong to the school communities",
+      "analysis": "This exact span supplies the context behind the key-ideas rationale's confidence-for-quieter-learners claim. Quiet learners, being valued, confidence, and belonging are recognizable themes, so the interpretation is reasonable despite corruption. It is not an exact rendering of the approved 'builds immense confidence' statement and does not demonstrate that any student's confidence actually increased."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/input/submission",
+      "quote": "effectively prabhavi dhung se environment vatavaran delegations kaurya sopna management prabandhan overwhelming atyadhek dedicated samarpet strategy renitir responsibility zemidariya inclusive samaveshi enzaiman chodag sign sje sehkriya partnership saajedari accountability jawab dehi administratives prashasnek impoverate sshashak",
+      "analysis": "The complete vocabulary segment supports the rationale that most items with meanings are included and that the 15-item task is attempted. Recognizable labels include Effectively, Environment, Delegation in an inflected form, Management, Overwhelming, Dedicated, Strategy, Responsibilities in singular form, Inclusive, Partnership, Accountability, and Administrative in an inflected form. The putative Engagement, Synergy, and Empowered list entries are substantially corrupted; locating them from sequence does not verify correct spoken pairs. 'team synergy' is separately recognized in the article passage, which supports use of that English term but not its list pairing. Several Hindi renderings remain uncertain. The assessment should distinguish attempted coverage from verified correctness and cannot infer a complete written list: input.attachments and evidence_assets are empty."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/input/submission",
+      "quote": "delegated task daily share responsibility fairly bail student confidence create inclusive space teach teamwork skills focus on teaching value average child encourage share rate encourage share rate leadership inspire future leaders thank you",
+      "analysis": "The complete closing sentence segment contains nine recognizable attempts corresponding to approved sentences 1, 2, 3, 4, 6, 7, 8, 9, and 10. Approved sentence 5, 'Trust your students.', has no recognizable counterpart anywhere in the saved transcript. The repeated 'encourage share rate' wording does not establish a tenth distinct required sentence. Some other attempts are corrupted, notably 'bail student confidence' and 'value average child'. The completion rationale is defensible if 'attempts ... the 10 simple sentences' means attempts the assigned exercise, but not if it means all 10 were actually represented. Absence from this transcript is not proof of omission from the unavailable recording."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/strengths/1",
+      "quote": "Included the vocabulary segment and the 10 simple sentences within the transcript.",
+      "analysis": "Vocabulary-segment inclusion is supported. The unqualified claim that the transcript includes 'the 10 simple sentences' is not supported by the complete sentence segment: only nine required sentence attempts are recognizable and 'Trust your students' is absent. This is a material completeness overstatement that the generic non-verbatim-evidence warning does not specifically correct."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/learning_gaps/0",
+      "quote": "Several vocabulary pairs and simple sentences are misspelled or unclear (e.g., \"bail student confidence,\" \"administratives prashasnek\").",
+      "analysis": "Both example phrases occur exactly in the saved transcript, and uncertainty in the recognized wording is real. The examples are not invented. 'Unclear in the transcript' is defensible; 'misspelled' as a learner learning gap, or assuming the learner gave incorrect meanings, is not established from machine transcription alone. No saved handwritten work supports a spelling finding."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/personalized_feedback",
+      "quote": "You covered the article well, including fairness, teamwork, and teacher time for support. Next, submit a clear, corrected list of the 15 word-meaning pairs and the 10 sentences, and reread the 'Book Guardian' line accurately.",
+      "analysis": "The positive article-content claims have direct support in the verified spans. The list request is a proposed next action, not evidence that a correct or complete list was already submitted. Asking for clarification is reasonable, but 'corrected' and 'reread ... accurately' risk implying verified learner error. The exact transcript already contains 'book guardian' after 'book generation'; the available text cannot distinguish learner self-correction from transcription noise. The specific unrecognized 'Trust your students' sentence should be named as a transcript-evidence gap."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/personalized_feedback_hi",
+      "quote": "Aapne lekh ke mukhya vichar jaise nyaaypoorna delegation, teamwork aur shikshak ke liye adhik samay achchhi tarah shamil kiye. Agla kadam: 15 shabd-arth aur 10 vaakyon ki sahi, saaf suchi jama karein aur ‘Book Guardian’ wali pangti ko theek se dobara padhein.",
+      "analysis": "The Hindi feedback repeats the supported fair-delegation, teamwork, and teacher-time content claims and requests a clear list. It introduces no separate unsupported achievement claim. Its instruction to read the Book Guardian line correctly has the same unresolved error-attribution issue as the English feedback."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/recommendations/0",
+      "quote": "Prepare and upload a clean written list of all 15 English words with correct Hindi meanings and the exact 10 simple sentences; then re-read the relevant lines to fix small wording errors.",
+      "analysis": "The requested list matches the approved module and responds to genuinely uncertain transcript segments. It is a recommendation, not evidence of completion. However, 'fix small wording errors' presumes a learner error and its severity; the saved text alone supports asking the teacher to verify uncertain recognized wording first."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/module_alignment",
+      "quote": "Strong alignment with the Day 12 module; transcript covers the article’s core ideas and includes the vocabulary list and simple sentences, with minor transcription errors.",
+      "analysis": "Strong topical alignment, core-idea coverage, a vocabulary segment, and a simple-sentence segment are supported. This statement does not explicitly say all sentences are present, unlike the overstated strength. Calling the transcription errors 'minor' is an unverified severity characterization: several vocabulary pairs and sentence forms are unclear, and the saved quality flag reports low recognition confidence in more than 35% of segments."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/result/confidence/rationale",
+      "quote": "High article coverage with a usable transcript, but many recognition errors and repetitions were flagged, so educator verification is advisable. One or more transcript evidence statements could not be matched verbatim to the server-supplied transcript.",
+      "analysis": "The assessment explicitly identifies the verbatim-matching problem; it is not an unacknowledged failure. The same mismatch warning is repeated in confidence.uncertainty_factors, alongside recognition, repetition, and partial-mapping concerns, with confidence.score 0.73. Direct checking identifies 10 exact evidence strings and three non-contiguous or mismatched strings. Two of the latter are supported ellipsis excerpts, while the name mismatch is redaction-sensitive. The warning appropriately contextualizes confidence but neither repairs those strings nor corrects the unsupported all-10-sentences strength. The saved record has no pre-warning score or confidence formula, so the warning's precise numeric effect cannot be demonstrated."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/input/local_video_evidence/quality_flags/0",
+      "quote": "More than 35% of transcript segments had low recognition confidence.",
+      "analysis": "This saved local-metadata flag supports the assessment's reported recognition uncertainty. The transcript visibly contains repetitions such as 'delegations, delegations', 'learn learn', and 'space space'. Nevertheless, per-segment confidence data and raw media are unavailable, so the percentage, genuine restart count, and the distinction between speech errors and recognition errors cannot be independently verified in this saved-output evaluation."
+    },
+    {
+      "source": "evaluation_packet.json#/target_assessment/execution_trace/5/detail",
+      "quote": "Confidence 73%; routed to mandatory teacher review.",
+      "analysis": "Consistent with result.confidence.score 0.73, review_required true, and status 'needs_review'. This is relevant mitigation for grounding uncertainty and supports PARTIAL_PASS rather than treating the assessment as an unqualified, fully trusted result. It records intended review routing, not completed teacher verification or correction of the specific unsupported claim."
+    }
+  ],
+  "confidence": 0.97,
+  "limitations": [
+    "Evaluated only evidence_grounding for the target assessment using the exact saved evaluation_packet.json. No live agent calls, external evidence, other-test verdicts, or WES impact evaluation were used.",
+    "The packet reports identifiers were redacted. The name mismatch is certain relative to the saved transcript, but whether it arose during redaction or assessment generation cannot be determined.",
+    "Raw recording, separate handwritten work, detailed recognition segments, and passage-alignment trace/specification are unavailable. This review establishes support in the saved text, not what the learner actually said or wrote.",
+    "The 95.1% arithmetic can be checked from saved counts, but the underlying alignment cannot be independently reproduced. The recognition-quality percentage is a saved metadata claim rather than an independently verified acoustic finding.",
+    "The mismatch warning is visibly incorporated into the confidence rationale and uncertainty factors, and teacher review is required. The record does not demonstrate the warning's numerical confidence decrement or that a teacher subsequently resolved the gaps.",
+    "The 0.97 confidence describes certainty in this saved-output grounding judgment, not confidence in the learner assessment or correctness of the original recording."
+  ],
+  "recommended_action": "Keep the assessment pending teacher review. Replace the redaction-sensitive name quote with an exact identity-free span from the saved transcript, and store the two ellipsis excerpts as separate exact spans. Correct the strength to say that the transcript contains a vocabulary segment and nine recognizable required-sentence attempts; explicitly flag 'Trust your students' as unrecognized rather than asserting it was never spoken. Distinguish recognized coverage from verified vocabulary correctness. Describe garbled wording as transcription uncertainty until teacher verification, including the Book Guardian line, rather than asserting learner spelling or reading errors. Attribute 95.1% to the saved local alignment estimate and retain the existing mismatch warning without claiming an unobserved numerical confidence adjustment."
+}

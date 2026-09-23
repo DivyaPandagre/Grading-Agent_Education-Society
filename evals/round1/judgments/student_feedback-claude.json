@@ -1,0 +1,67 @@
+{
+  "test_id": "student_feedback",
+  "judge_model": "claude",
+  "verdict": "PARTIAL_PASS",
+  "claim": "The saved English and Hindi feedback for the target assessment is brief, respectful, equivalent across languages, and names strengths that the transcript shows. It falls short of the pass condition in three ways. First, it bundles two next actions instead of one. Second, it tells the learner to reread the 'Book Guardian' line, which rests on an unconfirmed restart that the rubric evidence also cites as a strength. Third, it calls vocabulary and sentence errors things to 'correct' ('corrected' / 'sahi') without hedging, even though they are mostly likely Whisper recognition artifacts. It also misses the one concrete demonstrated omission: the sentence 'Trust your students.' These risks are contained because the record is unpublished and awaiting teacher review.",
+  "evidence": [
+    {
+      "aspect": "brevity",
+      "finding": "Pass. The English feedback is 2 sentences and 35 words. The Hindi feedback is 2 sentences and 42 words. Both meet the contract rule of no more than two short sentences. Neither repeats the score, rubric, confidence, or governance language.",
+      "source": "target_assessment.result.personalized_feedback; personalized_feedback_hi; agent_system_contract"
+    },
+    {
+      "aspect": "factual_consistency_strengths",
+      "finding": "Pass. 'You covered the article well, including fairness, teamwork, and teacher time for support' is supported by the transcript: 'deligations must be done with fairness every child should get a turn', 'growth, responsibility and teamwork', and 'give teachers extra time to focus on impactful lessons and individual supports'. It is also consistent with passage_completion_percentage 95.1 (231/243 words matched).",
+      "source": "target_assessment.input.submission; input.local_video_evidence"
+    },
+    {
+      "aspect": "english_hindi_equivalence",
+      "finding": "Largely pass. The Hindi text matches the English in meaning. It covers the strength ('nyaaypoorna delegation, teamwork aur shikshak ke liye adhik samay') and the same next step ('15 shabd-arth aur 10 vaakyon ki sahi, saaf suchi jama karein', 'Book Guardian wali pangti ko theek se dobara padhein'). There are two minor drifts. The Hindi drops the 'for support' / individual-support nuance, and it reframes 'covered the article' as 'main ideas included'.",
+      "source": "result.personalized_feedback vs result.personalized_feedback_hi"
+    },
+    {
+      "aspect": "hindi_script_naturalness",
+      "finding": "Minor concern. The Hindi feedback is romanized Latin script and contains 0 Devanagari characters. The module gives its Hindi meanings in Devanagari, and the other saved bilingual feedback (the wrong-assignment case) uses Devanagari. Romanized Hindi is understandable, but the contract asks for 'natural Hindi' and the script choice is inconsistent.",
+      "source": "result.personalized_feedback_hi; input.module_content; wrong_assignment_case.result.personalized_feedback_hi"
+    },
+    {
+      "aspect": "respectful_language",
+      "finding": "Pass. The feedback contains no labels about intelligence, character, effort, emotion, accent, or potential. The Hindi uses respectful forms ('Aapne', 'jama karein', 'padhein'). The student-facing feedback contains no personal name or identifiers.",
+      "source": "result.personalized_feedback; personalized_feedback_hi; agent_system_contract"
+    },
+    {
+      "aspect": "one_concrete_next_action",
+      "finding": "Partial. The next step is concrete but compound. It asks the learner to (1) submit a corrected written list of the 15 word-meaning pairs and 10 sentences and (2) reread the 'Book Guardian' line. The contract and pass condition both require one next action. The single saved recommendation also bundles 'then re-read the relevant lines'.",
+      "source": "result.personalized_feedback; result.recommendations; tests[student_feedback].pass_condition"
+    },
+    {
+      "aspect": "alignment_to_demonstrated_gaps",
+      "finding": "Partial. The list-resubmission action matches the only saved learning gap (unclear vocabulary pairs and sentences) and the largest deduction (Tough vocabulary 14/20). It is also consistent with the assignment prompt asking for written evidence, since the saved record has attachments [] and evidence_manifest []. The 'Book Guardian' action does not map to any saved learning gap. The Key ideas criterion even cites 'assigning a role like book generation, book guardian' as positive evidence, so the feedback treats that line as both a strength and an error.",
+      "source": "result.learning_gaps; result.criterion_evaluations[Key ideas communicated].evidence; input.attachments"
+    },
+    {
+      "aspect": "missed_specific_gap",
+      "finding": "Partial. The transcript contains 9 of the 10 simple sentences. 'Trust your students' (sentence 5) is absent, with 0 matches for 'trust'. The feedback does not name this one clearly demonstrated omission and only asks generically for 'the 10 sentences'. The saved strengths overstate completion by saying the 10 sentences were included.",
+      "source": "input.submission; input.module_content (10 SIMPLE SENTENCES); result.strengths"
+    },
+    {
+      "aspect": "uncertainty_handling",
+      "finding": "Concern. The local metrics flag low recognition confidence in more than 35% of segments (low_confidence_segment_count 21), evidence_quality 'review_recommended', and 6 possible restarts. teacher_priority_flags explicitly say 'Repeated words or restarts were detected; confirm before giving guidance.' Despite this, the feedback gives definitive guidance on the self-corrected restart 'book generation, book guardian'. It asks for a 'corrected' ('sahi') list even though examples like 'administratives prashasnek', 'bail student confidence', 'impoverate sshashak', and 'enzaiman chodag' look like transliteration or recognition artifacts of a spoken, code-switched reading. The learning gap also calls them 'misspelled', which does not fit a spoken transcript. This attributes uncertain evidence to the learner as fact.",
+      "source": "input.local_video_evidence (quality_flags, teacher_priority_flags, possible_restart_count); result.learning_gaps; result.personalized_feedback"
+    },
+    {
+      "aspect": "governance_mitigation",
+      "finding": "Mitigating. status 'needs_review', review_required true, ai_feedback_accepted null, and published_feedback, published_feedback_hi, teacher_feedback, and teacher_feedback_hi are all empty. The draft feedback has not reached the learner, so the overstated guidance can still be corrected by the teacher.",
+      "source": "target_assessment.status; review_required; published_feedback; execution_trace[confidence]"
+    }
+  ],
+  "confidence": 0.8,
+  "limitations": [
+    "This is a saved-output evaluation only. No live agent calls were made and no raw audio or video was available, so I cannot confirm whether the garbled vocabulary, the sentence items, or the 'Book Guardian' restart were learner misreadings or Whisper recognition errors.",
+    "The verdict covers the target assessment's personalized_feedback and personalized_feedback_hi. The wrong-assignment case's bilingual feedback was only checked for script and format comparison: it has 6 English sentences and would exceed the current two-sentence contract. It belongs to a different test and may predate that contract.",
+    "The Hindi evaluation assumes standard Hindi comprehension of romanized text. The learner's preferred script and reading level are not recorded.",
+    "Whether a missing handnote attachment reflects a real omission or a storage or redaction artifact cannot be determined from the packet.",
+    "Rubric score defensibility, evidence verbatim-matching, and redaction completeness of criterion evidence belong to other tests and did not affect this verdict. WES impact was not evaluated."
+  ],
+  "recommended_action": "Before release, the teacher should revise both language versions to one next action. Suggested English: 'You read almost the whole article clearly, including fairness, teamwork, and teacher time for support. Next, upload a written list of the 15 words with Hindi meanings and all 10 sentences, including \"Trust your students.\"' Mirror it in Devanagari Hindi. Drop the unconfirmed 'Book Guardian' reread instruction and the 'corrected'/'sahi' framing unless audio review confirms learner errors. Product-side: add a rule or post-check so that when teacher_priority_flags include restart or low-recognition flags, feedback must not target specific restarted lines or call recognition artifacts learner errors. Add validation for single-action feedback and for the Hindi script."
+}

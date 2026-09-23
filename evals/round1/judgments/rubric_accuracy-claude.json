@@ -1,0 +1,62 @@
+{
+  "test_id": "rubric_accuracy",
+  "judge_model": "claude",
+  "verdict": "PARTIAL_PASS",
+  "claim": "The structural parts of the pass condition hold. The saved rubric matches the authoritative homework definition: same 4 criterion names, maxima 40/25/20/15, scoring modes and descriptions. Criterion scores 37+24+14+14 sum correctly to 89/100 (89.0%). Every score is at or below its maximum, and the requires_transcript criterion was correctly treated as assessed. The criterion scores and rationales are only partly defensible. All four deductions (11 points) either have no stated reason or are tied to speech-recognition artifacts. The governing contract says such artifacts should lower confidence, not marks. One real content gap was missed: simple sentence 5 is absent. The strengths list also wrongly says all 10 sentences were included. An independent re-score from the transcript gives about 92-97/100, so the saved scores are a little too low but not grossly wrong.",
+  "evidence": [
+    {
+      "source": "evaluation_packet.json target_assessment.input.rubric vs data/wes_homeworks.json hw-84e1af7a-011d-5274-b2f6-7b2db8d5d8ae.rubric",
+      "quote": "Article coverage and reading accuracy (40, requires_transcript); Key ideas communicated (25); Tough vocabulary coverage (20); Required task completed (15)",
+      "analysis": "Checked programmatically. The saved rubric and assignment prompt are identical to the authoritative homework record, including names, max_points, scoring_mode and descriptions. The criterion_evaluations list the same names and maxima in the same order. This part of the pass condition is met."
+    },
+    {
+      "source": "evaluation_packet.json target_assessment.result",
+      "quote": "\"total_score\": 89.0, \"max_score\": 100.0, \"percentage\": 89.0, \"assessed_points_possible\": 100.0, \"provisional\": false",
+      "analysis": "37+24+14+14 = 89 and 40+25+20+15 = 100, so the arithmetic is correct. The transcript-gating conditions in app/agent.py _apply_conditional_scoring are all present: video_and_handnote, processing confirmed, local reference, and non-empty submission. So scoring Criterion 1 automatically and setting provisional=false is consistent with the code."
+    },
+    {
+      "source": "target_assessment.result.criterion_evaluations[0] (Article coverage and reading accuracy, 37/40)",
+      "quote": "The transcript closely follows the article with high coverage (95.1% reference match) and preserves core statements on fairness, shared leadership, and teacher time, despite noticeable recognition errors and restarts.",
+      "analysis": "The coverage finding is supported. The deterministic check shows 231/243 reference words matched. All rubric-named statements appear, e.g. 'every child should get a turn' and 'individual supports'. But the only reason given for the -3 is 'recognition errors and restarts'. agent_system_contract says 'Likely transcription errors should reduce confidence and trigger educator review, not reduce marks'. The app/agent.py prompt adds that 'possible repetitions are review context, not automatic reasons to deduct marks'. The deviations ('built way', 'future more deletion', 'toe concept', 'ex-hesitated') cannot be separated from ASR error using the transcript alone. A 38-40 score is better supported. The 37 is close, but its stated justification breaks the contract."
+    },
+    {
+      "source": "target_assessment.result.criterion_evaluations[1] (Key ideas communicated, 24/25)",
+      "quote": "Main ideas are communicated: fair delegation, confidence for quieter learners, teamwork, belonging, and more teacher time for individual support.",
+      "analysis": "The rationale says all four rubric-named ideas are present. The transcript confirms this: 'deligations must be done with fairness every child should get a turn especially quite student who rarely speak', 'growth, responsibility and teamwork', and 'give teachers extra time to focus on impactful lessons and individual supports'. The Hindi paraphrase reinforces these ideas. No reason is given for the 1-point deduction, so the rationale supports 25/25 rather than 24/25."
+    },
+    {
+      "source": "target_assessment.input.submission (vocabulary segment) vs module 15 TOUGH WORDS",
+      "quote": "effectively prabhavi dhung se environment vatavaran delegations kaurya sopna management prabandhan overwhelming atyadhek dedicated samarpet strategy renitir responsibility zemidariya inclusive samaveshi enzaiman chodag sign sje sehkriya partnership saajedari accountability jawab dehi administratives prashasnek impoverate sshashak",
+      "analysis": "Independent count: all 15 items were attempted in module order. About 11 pairs are clearly recognizable (1-6, 8, 9, 12-14). Three are only partly recognizable: strategy/'renitir', synergy as 'sign sje'/'sehkriya', and empowered as 'impoverate sshashak'. One, engagement as 'enzaiman chodag', cannot be recognized. The rubric allows withholding credit for unrecognized items ('for video, use only words recognized in the transcript'). That gives a defensible range of about 14.7-16.7/20. So 14/20 is at or just below the harsh edge."
+    },
+    {
+      "source": "target_assessment.result.criterion_evaluations[2] and result.learning_gaps",
+      "quote": "Most vocabulary items with Hindi meanings are included, but several pairs are misspelled or unclear, reducing correctness. / Several vocabulary pairs and simple sentences are misspelled or unclear (e.g., \"bail student confidence,\" \"administratives prashasnek\").",
+      "analysis": "The deduction rests on 'misspelled'. In a Whisper romanization of spoken Hindi, spelling is produced by the ASR, not the learner, so it is not a valid thing to mark down. The four evidence quotes for this criterion are all correct pairs, so none of them supports the -6. The failing items are never named. The learning gap calls 'administratives prashasnek' an error, yet the same quote is used as positive evidence and it is a recognizable rendering of Administrative/प्रशासनिक. The rationale and evidence contradict each other."
+    },
+    {
+      "source": "target_assessment.result.criterion_evaluations[3] (Required task completed, 14/15) and result.strengths",
+      "quote": "A usable video transcript is present and the submission attempts the 15-word list and the 10 simple sentences, though some wording is garbled. / Included the vocabulary segment and the 10 simple sentences within the transcript.",
+      "analysis": "For a video, the rubric requires 'a usable local transcript', and the rationale itself says that condition is met. The -1 is blamed on 'garbled wording', which is an ASR artifact and double-counts the Criterion 3 penalty. The transcript sentence segment is 'delegated task daily share responsibility fairly bail student confidence create inclusive space teach teamwork skills focus on teaching value average child encourage share rate ... leadership inspire future leaders'. Sentence 5, 'Trust your students.', is missing; 'trust' does not appear anywhere in the transcript. The assessment did not detect this, and its strength claim of 10 sentences is factually wrong. A 14-15 score is defensible, but not for the reason given."
+    },
+    {
+      "source": "target_assessment.result.criterion_evaluations[3].evidence[0]; evals/round1/build_packet.py redact()",
+      "quote": "[learner name redacted], today I am performing my task 71 TS",
+      "analysis": "This quote does not match the packet transcript, which begins 'Learner, today I am performing my task 71 TS'. That is because build_packet.py redacts the name only in input.submission, not in result evidence. This is a redaction artifact, not an invented quote. All other Criterion 1-4 evidence strings are verbatim substrings, or ellipsis-joined verbatim substrings, of the transcript."
+    },
+    {
+      "source": "target_assessment.status / review_required / audit_trail",
+      "quote": "\"status\": \"needs_review\", \"review_required\": true ... \"The indicator is low-confidence, requires teacher confirmation, and did not change the rubric score.\"",
+      "analysis": "This softens the harm from the scoring flaws: the draft is not released and a teacher must confirm the marks. The inferred-fluency addition did not change the criterion scores. It does not change the finding that the criterion rationales are only partly defensible."
+    }
+  ],
+  "confidence": 0.8,
+  "limitations": [
+    "Saved-output evaluation only. Raw audio/video was not available, so learner misreadings cannot be told apart from Whisper recognition errors. Deviations are therefore treated as recognition artifacts, following the agent contract.",
+    "The independent vocabulary and sentence counts rely on judge interpretation of romanized Hindi and ASR-garbled English. Another rater could reasonably shift the Criterion 3 range by about 1-2 points.",
+    "The rubric has no scoring bands or anchors, so point-level deductions within a criterion involve rater judgment. The verdict rests on whether the rationales are consistent with the rubric and contract, not on exact points.",
+    "The exact user-prompt text sent at assessment time (2026-09-22T16:01Z) was not saved in the packet. The current app/agent.py prompt may differ slightly from what was used. The packet's agent_system_contract on its own already forbids deducting marks for likely transcription errors.",
+    "Only the target assessment was re-scored for this test. The wrong-assignment case and the WES impact claims were out of scope."
+  ],
+  "recommended_action": "Keep the assessment in teacher review and do not release the 89/100 unchanged. The teacher should: (1) restore marks deducted only for recognition artifacts or restarts (Criterion 1, and the 'garbled wording' part of Criterion 4); (2) give 25/25 for Criterion 2 unless a specific missing idea is named; (3) re-score Criterion 3 by listing which of the 15 pairs are recognized (about 15-17/20); (4) record that simple sentence 5 ('Trust your students.') is missing and correct the strengths line claiming all 10 sentences. For the agent, require each criterion rationale to name the specific item behind every deduction. Stop 'misspelled' from being used as a reason to deduct on transcripts. Add a check that fails any rationale that deducts for recognition errors, restarts or quality flags. Also fix build_packet.py so it redacts learner names in result evidence as well as the submission."
+}

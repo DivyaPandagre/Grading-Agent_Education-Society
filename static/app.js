@@ -383,7 +383,7 @@ function showView(name) {
   if (nav) nav.classList.add("active");
   $("#student-side-nav").classList.toggle("hidden", name !== "student");
   const titles = {
-    home: "How the agent works",
+    home: "How EduGrade turns homework into governed learning evidence.",
     admin: "Ground assessment in trusted knowledge.",
     teacher: "Review before release.",
     student: "Learn with timely feedback.",
@@ -942,6 +942,23 @@ function evidenceMarkup(assessment) {
             <div class="local-video-pointers">
               <b>Local non-AI evidence summary</b>
               <span>${assessment.input.local_video_evidence.duration_seconds.toFixed(1)} seconds · ${assessment.input.local_video_evidence.transcript_word_count} transcript words · approximately ${assessment.input.local_video_evidence.estimated_words_per_minute.toFixed(1)} words/minute</span>
+              ${assessment.input.local_video_evidence.active_speech_seconds ? `
+                <span>${assessment.input.local_video_evidence.active_speech_seconds.toFixed(1)} seconds active speech · ${assessment.input.local_video_evidence.active_speech_wpm.toFixed(1)} active-speech words/minute · ${(assessment.input.local_video_evidence.speech_ratio * 100).toFixed(0)}% speech coverage</span>
+              ` : ""}
+              ${assessment.input.local_video_evidence.passage_words_expected ? `
+                <span><strong>Passage completion:</strong> ${assessment.input.local_video_evidence.passage_completion_percentage.toFixed(1)}% · ${assessment.input.local_video_evidence.passage_words_matched}/${assessment.input.local_video_evidence.passage_words_expected} reference words matched</span>
+              ` : ""}
+              ${assessment.input.local_video_evidence.inferred_fluency_score !== null && assessment.input.local_video_evidence.inferred_fluency_score !== undefined ? `
+                <span><strong>Inferred reading fluency:</strong> ${escapeHtml(assessment.input.local_video_evidence.inferred_fluency_level.replaceAll("_", " "))} · ${assessment.input.local_video_evidence.inferred_fluency_score.toFixed(1)}/100 · ${escapeHtml(assessment.input.local_video_evidence.inferred_fluency_confidence)} confidence · teacher confirmation required</span>
+                <span><strong>Provisional components:</strong> passage and continuity ${assessment.input.local_video_evidence.fluency_passage_continuity_score.toFixed(1)} × 30% · pace consistency ${assessment.input.local_video_evidence.fluency_pace_consistency_score.toFixed(1)} × 25% · pause continuity ${assessment.input.local_video_evidence.fluency_pause_continuity_score.toFixed(1)} × 20% · restarts/self-corrections ${assessment.input.local_video_evidence.fluency_restart_score.toFixed(1)} × 15% · task pace ${assessment.input.local_video_evidence.fluency_task_pace_score.toFixed(1)} × 10%</span>
+                <span>Task-pace reference: ${assessment.input.local_video_evidence.fluency_target_wpm_min.toFixed(0)}–${assessment.input.local_video_evidence.fluency_target_wpm_max.toFixed(0)} active-speech words/minute. Accent, dialect, diction and pronunciation are not evaluated.</span>
+              ` : ""}
+              <span><strong>Recording evidence:</strong> ${escapeHtml((assessment.input.local_video_evidence.evidence_quality || "review_recommended").replaceAll("_", " "))} · ${assessment.input.local_video_evidence.pause_count || 0} pauses · ${assessment.input.local_video_evidence.long_pause_count || 0} long pauses · ${assessment.input.local_video_evidence.possible_restart_count || 0} possible repetitions/restarts</span>
+              ${assessment.input.local_video_evidence.active_speech_wpm_change !== null && assessment.input.local_video_evidence.active_speech_wpm_change !== undefined ? `
+                <span><strong>Change from prior attempt:</strong> ${assessment.input.local_video_evidence.active_speech_wpm_change >= 0 ? "+" : ""}${assessment.input.local_video_evidence.active_speech_wpm_change.toFixed(1)} active-speech words/minute${assessment.input.local_video_evidence.completion_percentage_change !== null && assessment.input.local_video_evidence.completion_percentage_change !== undefined ? ` · ${assessment.input.local_video_evidence.completion_percentage_change >= 0 ? "+" : ""}${assessment.input.local_video_evidence.completion_percentage_change.toFixed(1)} completion points` : ""}</span>
+              ` : ""}
+              ${(assessment.input.local_video_evidence.quality_flags || []).map((flag) => `<span>Evidence check: ${escapeHtml(flag)}</span>`).join("")}
+              ${(assessment.input.local_video_evidence.teacher_priority_flags || []).map((flag) => `<span>Teacher priority: ${escapeHtml(flag)}</span>`).join("")}
               <span>Teacher frame pointers: ${assessment.input.local_video_evidence.frame_pointer_seconds.map((second) => `${second.toFixed(1)}s`).join(" · ")}</span>
             </div>
           ` : ""}
@@ -1220,6 +1237,118 @@ function studentCriterionLevel(criterion) {
   return "Starting";
 }
 
+function studentCriterionHindiLabel(criterionName) {
+  const normalized = String(criterionName || "").toLowerCase();
+  const translations = [
+    [["concept", "scientific accuracy", "article coverage"], "विषय की शुद्धता"],
+    [["reasoning", "application", "key ideas"], "तर्क और प्रयोग"],
+    [["required work", "task completion"], "आवश्यक कार्य पूरा करना"],
+    [["structure", "organization"], "संरचना और क्रम"],
+    [["communication", "vocabulary", "terminology", "spelling"], "भाषा और शब्दावली"],
+    [["fluency", "reading"], "पठन प्रवाह"],
+  ];
+  return translations.find(([terms]) => terms.some((term) => normalized.includes(term)))?.[1] ||
+    "मूल्यांकन क्षेत्र";
+}
+
+function studentCriterionPoints(value) {
+  const numeric = Number(value);
+  return Number.isInteger(numeric) ? String(numeric) : numeric.toFixed(1);
+}
+
+function studentCriterionReason(criterion) {
+  const fallback = criterion.assessed
+    ? "This mark reflects the teacher-approved work found for this rubric area."
+    : criterion.not_assessed_reason || "There was not enough evidence to assess this area.";
+  const rationale = /score confirmed or edited by the educator/i.test(criterion.rationale || "")
+    ? criterion.evidence?.[0]
+    : criterion.rationale || criterion.evidence?.[0];
+  return conciseStudentText(rationale, fallback, 190);
+}
+
+function studentCriterionHindiReason(criterion) {
+  const level = studentCriterionLevel(criterion);
+  if (level === "Strong") return "आपने इस क्षेत्र की अधिकांश अपेक्षाएँ स्पष्ट और सही रूप से पूरी कीं।";
+  if (level === "On track") return "आपने मुख्य अपेक्षाएँ पूरी कीं, लेकिन एक छोटा सुधार अभी बाकी है।";
+  if (level === "Developing") return "कुछ सही काम दिखा, लेकिन उत्तर को अधिक स्पष्ट और पूरा बनाना है।";
+  if (level === "Starting") return "इस क्षेत्र को दोबारा समझने और अधिक अभ्यास की आवश्यकता है।";
+  return "इस क्षेत्र के लिए पर्याप्त प्रमाण उपलब्ध नहीं था।";
+}
+
+function studentCriterionNextStep(criterion) {
+  const level = studentCriterionLevel(criterion);
+  if (level === "Strong") {
+    return {
+      en: "Keep this strength and add one precise example next time.",
+      hi: "इस मजबूती को बनाए रखें और अगली बार एक स्पष्ट उदाहरण जोड़ें।",
+    };
+  }
+  if (level === "On track") {
+    return {
+      en: "Add one specific example or a clearer explanation.",
+      hi: "एक स्पष्ट उदाहरण या अधिक साफ़ व्याख्या जोड़ें।",
+    };
+  }
+  if (level === "Developing") {
+    return {
+      en: "Review this area and support your answer with evidence.",
+      hi: "इस क्षेत्र को दोहराएँ और उत्तर के साथ प्रमाण जोड़ें।",
+    };
+  }
+  if (level === "Starting") {
+    return {
+      en: "Revisit this part with your teacher and try it again.",
+      hi: "इस भाग को शिक्षक के साथ दोहराएँ और फिर से प्रयास करें।",
+    };
+  }
+  return {
+    en: "Submit the required evidence so this area can be assessed.",
+    hi: "आवश्यक प्रमाण जमा करें ताकि इस क्षेत्र का मूल्यांकन हो सके।",
+  };
+}
+
+function studentScoreReasonMarkup(assessment) {
+  const criteria = assessment.result.criterion_evaluations || [];
+  return `
+    <div class="student-score-detail-intro">
+      <strong>Your score has ${criteria.length} rubric parts.</strong>
+      <span>हर भाग में अंक, कारण और अगला सुधार देखें।</span>
+    </div>
+    <div class="student-score-reasons">
+      ${criteria.map((criterion) => {
+        const level = studentCriterionLevel(criterion);
+        const nextStep = studentCriterionNextStep(criterion);
+        const score = criterion.assessed
+          ? `${studentCriterionPoints(criterion.score)} / ${studentCriterionPoints(criterion.max_points)}`
+          : "Not assessed";
+        return `
+          <article class="student-score-reason">
+            <header>
+              <div>
+                <strong>${escapeHtml(criterion.criterion)}</strong>
+                <small lang="hi">${escapeHtml(studentCriterionHindiLabel(criterion.criterion))}</small>
+              </div>
+              <b>${escapeHtml(score)} · ${escapeHtml(level)}</b>
+            </header>
+            <div class="student-score-reason-copy">
+              <div>
+                <span>Why this mark / इन अंकों का कारण</span>
+                <p>${escapeHtml(studentCriterionReason(criterion))}</p>
+                <small lang="hi">${escapeHtml(studentCriterionHindiReason(criterion))}</small>
+              </div>
+              <div>
+                <span>What to work on / क्या सुधारें</span>
+                <p>${escapeHtml(nextStep.en)}</p>
+                <small lang="hi">${escapeHtml(nextStep.hi)}</small>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
 function studentFeedbackSummary(assessment, feedbackEn = "", feedbackHi = "") {
   const wrongModule = assessment.status === "wrong_assignment" ||
     /\b(not aligned|low alignment|different assignment|different task)\b/i.test(
@@ -1274,6 +1403,9 @@ function studentFeedbackSummary(assessment, feedbackEn = "", feedbackHi = "") {
         : "Improve one area and try the assignment again.",
       180
     ),
+    nextStepHi: notScored
+      ? "सही असाइनमेंट खोलें और यह काम सही स्थान पर जमा करें।"
+      : "ऊपर दिए गए सुधार पर काम करें और फिर से प्रयास करें।",
   };
 }
 
@@ -1499,32 +1631,31 @@ function renderStudentFeedback() {
         <strong>${escapeHtml(feedbackSummary.outcome)}</strong>
         <p>${escapeHtml(feedbackSummary.reason)}</p>
       </div>
-      <ul class="student-feedback-evidence">
-        ${feedbackSummary.evidence.map((evidence) => `<li>${escapeHtml(evidence)}</li>`).join("")}
-      </ul>
       <div class="student-bilingual-feedback">
-        <span>Feedback to you</span>
-        <p lang="en">${escapeHtml(feedbackSummary.feedbackEn)}</p>
-        <p lang="hi">${escapeHtml(feedbackSummary.feedbackHi)}</p>
+        <div>
+          <span>English</span>
+          <p lang="en">${escapeHtml(feedbackSummary.feedbackEn)}</p>
+        </div>
+        <div>
+          <span>हिंदी</span>
+          <p lang="hi">${escapeHtml(feedbackSummary.feedbackHi)}</p>
+        </div>
       </div>
       <div class="student-single-next-step">
-        <span>Your next action</span>
-        <p>${escapeHtml(feedbackSummary.nextStep)}</p>
+        <span>Your next action / आपका अगला कदम</span>
+        <p lang="en">${escapeHtml(feedbackSummary.nextStep)}</p>
+        <p lang="hi">${escapeHtml(feedbackSummary.nextStepHi)}</p>
       </div>
       ${feedbackSummary.notScored ? "" : `<details class="student-result-explanation student-score-details">
         <summary>
           <span>
-            <strong>View score details</strong>
-            <small>Optional: see your learning stage for each area.</small>
+            <strong>Why this score? / यह स्कोर क्यों?</strong>
+            <small>See the reason and one improvement for every rubric area.</small>
           </span>
         </summary>
         <div class="student-result-explanation-content">
-          <div class="compact-score-list">
-            ${item.result.criterion_evaluations.map((criterion) => `
-              <div><strong>${escapeHtml(criterion.criterion)}</strong><span>${studentCriterionLevel(criterion)}</span></div>
-            `).join("")}
-          </div>
-          <p class="student-explanation-note">Only teacher-approved results are shown. Detailed evidence and governance information remain available to educators in Agent Inspector.</p>
+          ${studentScoreReasonMarkup(item)}
+          <p class="student-explanation-note">Only teacher-approved reasons are shown. Detailed governance information remains available to educators.</p>
         </div>
       </details>`}
     </article>
@@ -2070,6 +2201,18 @@ function buildLocalVideoEvidence(transcription) {
     duration_seconds: Math.round(durationSeconds * 10) / 10,
     transcript_word_count: transcriptWordCount,
     estimated_words_per_minute: Math.round(estimatedWordsPerMinute * 10) / 10,
+    active_speech_seconds: Math.round((transcription.active_speech_seconds || 0) * 10) / 10,
+    active_speech_wpm: Math.round((transcription.active_speech_wpm || 0) * 10) / 10,
+    speech_ratio: transcription.speech_ratio || 0,
+    pause_count: transcription.pause_count || 0,
+    long_pause_count: transcription.long_pause_count || 0,
+    longest_pause_seconds: Math.round((transcription.longest_pause_seconds || 0) * 10) / 10,
+    possible_restart_count: transcription.possible_restart_count || 0,
+    low_confidence_segment_count: transcription.low_confidence_segment_count || 0,
+    pace_consistency_score: transcription.pace_consistency_score || 0,
+    pace_variability_percentage: transcription.pace_variability_percentage || 0,
+    evidence_quality: transcription.evidence_quality || "review_recommended",
+    quality_flags: transcription.quality_flags || [],
     frame_pointer_seconds: framePointerSeconds,
     contains_video_data: false,
   };
@@ -2595,7 +2738,7 @@ $("#assessment-form").addEventListener("submit", async (event) => {
       localVideoEvidence = buildLocalVideoEvidence(localVideo.transcription);
       $("#local-video-status").insertAdjacentHTML(
         "beforeend",
-        `<small>Local Whisper transcription complete · ${escapeHtml(localVideo.transcription.language || "language auto-detected")} · ${localVideoEvidence.duration_seconds.toFixed(1)} seconds · ${localVideoEvidence.transcript_word_count} words · approximately ${localVideoEvidence.estimated_words_per_minute.toFixed(1)} words/minute.</small>`
+        `<small>Local Whisper transcription complete · ${escapeHtml(localVideo.transcription.language || "language auto-detected")} · ${localVideoEvidence.duration_seconds.toFixed(1)} seconds · ${localVideoEvidence.transcript_word_count} words · ${localVideoEvidence.active_speech_wpm.toFixed(1)} active-speech words/minute · evidence ${escapeHtml(localVideoEvidence.evidence_quality.replaceAll("_", " "))}. Assignment completion is calculated after the approved module is loaded.</small>`
       );
       if (inspectorAllowed) traceTimer = startLiveTrace();
     }

@@ -61,6 +61,45 @@ class LocalVideoEvidenceSummary(BaseModel):
     duration_seconds: float = Field(ge=0, le=7200)
     transcript_word_count: int = Field(ge=0, le=10000)
     estimated_words_per_minute: float = Field(ge=0, le=1000)
+    active_speech_seconds: float = Field(default=0, ge=0, le=7200)
+    active_speech_wpm: float = Field(default=0, ge=0, le=1000)
+    speech_ratio: float = Field(default=0, ge=0, le=1)
+    pause_count: int = Field(default=0, ge=0, le=10000)
+    long_pause_count: int = Field(default=0, ge=0, le=10000)
+    longest_pause_seconds: float = Field(default=0, ge=0, le=7200)
+    possible_restart_count: int = Field(default=0, ge=0, le=10000)
+    low_confidence_segment_count: int = Field(default=0, ge=0, le=10000)
+    pace_consistency_score: float = Field(default=0, ge=0, le=100)
+    pace_variability_percentage: float = Field(default=0, ge=0, le=1000)
+    evidence_quality: Literal["good", "review_recommended", "insufficient"] = "good"
+    quality_flags: list[str] = Field(default_factory=list, max_length=20)
+    passage_words_matched: int = Field(default=0, ge=0, le=10000)
+    passage_words_expected: int = Field(default=0, ge=0, le=10000)
+    passage_completion_percentage: float = Field(default=0, ge=0, le=100)
+    previous_active_speech_wpm: float | None = Field(default=None, ge=0, le=1000)
+    active_speech_wpm_change: float | None = Field(default=None, ge=-1000, le=1000)
+    previous_completion_percentage: float | None = Field(default=None, ge=0, le=100)
+    completion_percentage_change: float | None = Field(default=None, ge=-100, le=100)
+    fluency_passage_continuity_score: float | None = Field(default=None, ge=0, le=100)
+    fluency_pace_consistency_score: float | None = Field(default=None, ge=0, le=100)
+    fluency_pause_continuity_score: float | None = Field(default=None, ge=0, le=100)
+    fluency_restart_score: float | None = Field(default=None, ge=0, le=100)
+    fluency_task_pace_score: float | None = Field(default=None, ge=0, le=100)
+    fluency_target_wpm_min: float | None = Field(default=None, ge=0, le=1000)
+    fluency_target_wpm_max: float | None = Field(default=None, ge=0, le=1000)
+    inferred_fluency_score: float | None = Field(default=None, ge=0, le=100)
+    inferred_fluency_level: Literal[
+        "not_available",
+        "insufficient_evidence",
+        "emerging",
+        "developing",
+        "consistent",
+        "strong",
+    ] = "not_available"
+    inferred_fluency_confidence: Literal["none", "low", "moderate"] = "none"
+    inferred_fluency_review_required: bool = True
+    inferred_fluency_version: str = Field(default="", max_length=40)
+    teacher_priority_flags: list[str] = Field(default_factory=list, max_length=20)
     frame_pointer_seconds: list[float] = Field(default_factory=list, max_length=12)
     contains_video_data: Literal[False] = False
 

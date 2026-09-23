@@ -1,0 +1,56 @@
+{
+  "test_id": "evidence_grounding",
+  "judge_model": "claude",
+  "verdict": "PARTIAL_PASS",
+  "claim": "The main claims about article coverage, key ideas and vocabulary presence are grounded in the saved transcript. 10 of 13 evidence strings are exact transcript substrings, and none is invented. Three strings are not verbatim against the packet transcript. Two are ellipsis-stitched composites. The third contains a learner name that was redacted only in the packet's copy of the transcript. The assessment's own mismatch warning is accurate but generic, and it did not change the confidence number: 0.73 was already below the 0.74 cap. Several important claims also overstate or misattribute the evidence: the claim that all 10 simple sentences were included ('Trust your students' is missing), the word 'misspelled' applied to Whisper's romanized spelling, and the implied misreading of 'Book Guardian'. Mandatory teacher review limits the risk, so the verdict is PARTIAL_PASS rather than PASS.",
+  "evidence": [
+    {
+      "source": "target_assessment.result.criterion_evaluations[0..2].evidence vs target_assessment.input.submission",
+      "quote": "every child should get a turn | joyful space space of sered leadership and collective efforts | effective deligations give teachers extra time to focus on impactful lessons and individual supports | assigning a role like book generation, book guardian | growth, responsibility and teamwork | help them feel they belong to the school communities | effectively prabhavi dhung se | environment vatavaran | accountability jawab dehi | administratives prashasnek",
+      "analysis": "Reproduced the server's normalization (lowercase, strip quotes, collapse whitespace, substring test from app/main.py apply_evidence_grounding). All 10 evidence strings for 'Article coverage and reading accuracy', 'Key ideas communicated' and 'Tough vocabulary coverage' are exact substrings of the saved transcript, including ASR artifacts ('sered', 'deligations', 'space space'). Nothing was invented or paraphrased."
+    },
+    {
+      "source": "target_assessment.result.criterion_evaluations[3].evidence[0] vs target_assessment.input.submission; data/assessments.json original record; evals/round1/build_packet.py redact()",
+      "quote": "Evidence: \"[learner first name], today I am performing my task 71 TS\"; packet transcript: \"Learner, today I am performing my task 71 TS\"",
+      "analysis": "This string does not match the redacted packet transcript. It does match the original saved transcript verbatim. build_packet.py replaces the name only in input.submission, so result evidence still contains it. This is a redaction artifact, not an invention, and the original transcript would pass the server check. However, the saved evidence and the packet reproduce the learner's first name, which this quote does not need."
+    },
+    {
+      "source": "target_assessment.result.criterion_evaluations[3].evidence[1..2] vs target_assessment.input.submission",
+      "quote": "\"delegated task daily ... teach teamwork skills ... inspire future leaders\"; \"effectively prabhavi dhung se ... administratives prashasnek\"; transcript: \"delegated task daily share responsibility fairly bail student confidence create inclusive space teach teamwork skills focus on teaching value average child encourage share rate encourage share rate leadership inspire future leaders\"",
+      "analysis": "Each fragment is verbatim and in transcript order. As whole strings, both composites fail the server's substring test even against the original transcript. They are the only strings that could have triggered the mismatch warning, which applies only to the 'Required task completed' criterion. The first composite leaves out the garbled sentences ('bail student confidence', 'value average child', 'encourage share rate ... leadership'). It also hides that one required sentence is missing, so the evidence looks cleaner than the transcript."
+    },
+    {
+      "source": "target_assessment.result.confidence; target_assessment.execution_trace[confidence]; app/main.py apply_evidence_grounding; app/config.py confidence_review_threshold",
+      "quote": "\"One or more transcript evidence statements could not be matched verbatim to the server-supplied transcript.\" / \"Confidence 73%; routed to mandatory teacher review.\" / confidence_review_threshold: float = 0.75; result.confidence.score = min(result.confidence.score, max(0.0, review_threshold - 0.01))",
+      "analysis": "The warning is correct: my reproduction confirms that non-verbatim evidence exists. However, it is generic. It does not name the failing evidence item or criterion, and the code keeps the criterion names internally without saving them. The cap is min(0.73, 0.74), so it did not bind and the confidence number was unchanged. The case would have gone to review anyway because 0.73 is below 0.75. So the non-verbatim evidence was flagged and recorded in the rationale, but it did not actually lower confidence. The check is substring-only and cannot catch the overstatements described below."
+    },
+    {
+      "source": "target_assessment.result.strengths[1]; target_assessment.result.criterion_evaluations[3].rationale; target_assessment.input.module_content (10 SIMPLE SENTENCES)",
+      "quote": "\"Included the vocabulary segment and the 10 simple sentences within the transcript.\" / \"the submission attempts the 15-word list and the 10 simple sentences\"; module sentence 5: \"Trust your students.\"",
+      "analysis": "'trust' appears 0 times in the saved transcript. Only 9 of the 10 required sentences were attempted (3, 8 and 9 are garbled). The learner-facing strength and the criterion rationale overstate what was completed. This is an unsupported claim."
+    },
+    {
+      "source": "target_assessment.result.criterion_evaluations[2].rationale; target_assessment.result.learning_gaps[0]; target_assessment.input.attachments / evidence_manifest",
+      "quote": "\"Most vocabulary items with Hindi meanings are included, but several pairs are misspelled or unclear, reducing correctness.\" / \"Several vocabulary pairs and simple sentences are misspelled or unclear (e.g., \\\"bail student confidence,\\\" \\\"administratives prashasnek\\\")\"; attachments: [], evidence_manifest: []",
+      "analysis": "The presence claim is supported: all 15 English terms are attempted, and 11 have recognizable Hindi meanings. The garbled ones are 'strategy renitir', 'enzaiman chodag', 'sign sje sehkriya' and 'impoverate sshashak'. The spoken transcript is the only evidence, since no handnote or written attachment exists, so the spelling comes from Whisper's romanization and not from the learner. Calling it 'misspelled' is therefore unsupported. The assessment also uses 'administratives prashasnek' as positive evidence for criterion 3 and as a gap example, which is inconsistent. None of the garbled pairs behind the 6-point deduction is quoted as evidence."
+    },
+    {
+      "source": "target_assessment.result.personalized_feedback / personalized_feedback_hi vs target_assessment.input.submission",
+      "quote": "\"reread the 'Book Guardian' line accurately\"; transcript: \"assigning a role like book generation, book guardian sent a strong message that they are of valued this bears a man's confidence\"",
+      "analysis": "The transcript does contain 'book guardian', right after an apparent self-correction. With 21 low-confidence segments, the transcript cannot show whether the rest of the line is a reading error or a recognition error. The instruction to reread the line is only weakly grounded and treats a possible ASR artifact as the learner's mistake."
+    },
+    {
+      "source": "target_assessment.result.criterion_evaluations[0].rationale; target_assessment.input.local_video_evidence",
+      "quote": "\"high coverage (95.1% reference match) ... despite noticeable recognition errors and restarts\"; passage_words_matched: 231, passage_words_expected: 243, passage_completion_percentage: 95.1, low_confidence_segment_count: 21, possible_restart_count: 6, transcript_word_count: 480",
+      "analysis": "The coverage figure comes from permitted deterministic metadata. transcript_word_count (480) matches the saved transcript's 480 whitespace-separated words. Repetitions and restarts appear verbatim ('space space', 'learn learn', 'delegations, delegations', 'encourage share rate encourage share rate'). These claims are grounded."
+    },
+    {
+      "source": "target_assessment.result.module_alignment vs target_assessment.result.confidence.rationale",
+      "quote": "\"with minor transcription errors\" vs \"many recognition errors and repetitions were flagged\"",
+      "analysis": "The assessment describes the same evidence in two inconsistent ways. The metadata flags that more than 35% of segments had low recognition confidence, so 'minor' understates the quality problem. This is a small issue."
+    }
+  ],
+  "confidence": 0.86,
+  "limitations": "I judged saved output only, with no live calls and no raw audio or video. So I cannot tell whether garbled vocabulary or sentences come from the learner's speech or from Whisper recognition. The primary reference was the redacted packet transcript. I read the original saved record in data/assessments.json only to confirm that the name mismatch is a redaction artifact; its result block is identical to the packet's. I identified which evidence triggered the server warning by reproducing the normalization in app/main.py; the saved record does not store which criterion was flagged. The model's confidence before the cap is not saved, but min() semantics mean the final 0.73 is the model's own value. Rubric point accuracy, fairness, fluency, responsible-AI handling and any WES impact are out of scope, except where they bear on grounding.",
+  "recommended_action": "Keep the record in teacher review. 1) Correct the strength and the criterion-4 rationale to say 9 of 10 sentences were attempted ('Trust your students' is missing). 2) Replace the ellipsis composites with separate verbatim excerpts, quote the garbled pairs that justify the vocabulary deduction, and describe them as 'unclear in the transcript' rather than 'misspelled'. 3) Soften or remove the 'Book Guardian' reread instruction unless the teacher confirms a reading error from the local recording. 4) Make apply_evidence_grounding save which evidence item and criterion failed, and apply a real confidence reduction instead of a cap that may not bind. 5) Remove the learner's name from criterion evidence, and extend build_packet.py redaction to result evidence."
+}

@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/styles.css?v=20260921-14">
+  <link rel="stylesheet" href="/static/styles.css?v=20260923-19">
 </head>
 <body>
   <div class="app-shell">
@@ -100,12 +100,194 @@
       <header>
         <div>
           <span class="eyebrow">Responsible learning assistant</span>
-          <h1 id="page-title">Help every student learn. Protect every learner.</h1>
+          <h1 id="page-title">How EduGrade turns homework into governed learning evidence.</h1>
         </div>
         <div class="header-pill"><span></span> Human review enabled</div>
       </header>
 
       <section id="home-view" class="view active">
+        <section class="agent-story-hero">
+          <div class="agent-story-hero-copy">
+            <span class="eyebrow">Why EduGrade exists</span>
+            <h2>WES receives more student work than teachers can review quickly and consistently.</h2>
+            <p>Approximately 3,000 learners across DPS School, WES Academy, and CLAS government schools generate 1,600–2,000 assessment submissions every school day. EduGrade was built to help make every submission visible, identify where support is needed, and keep the teacher responsible for the final educational decision.</p>
+            <div class="agent-story-source">WES stakeholder baseline · approximate figures pending formal operational validation</div>
+          </div>
+          <div class="agent-story-scale" aria-label="WES assessment scale">
+            <article><strong>~3,000</strong><span>students currently served</span></article>
+            <article><strong>1,600–2,000</strong><span>daily assessment submissions</span></article>
+            <article><strong>8,000–10,000</strong><span>submissions in a five-day week</span></article>
+          </div>
+        </section>
+
+        <section class="agent-story-section agent-story-solution">
+          <div class="agent-story-heading">
+            <div>
+              <span class="eyebrow">Problem → solution</span>
+              <h2>We built an assessment assistant—not an autonomous grader.</h2>
+            </div>
+            <p>The agent prepares evidence-backed drafts at scale. Teachers verify uncertain evidence, edit scores and decide what learners may see.</p>
+          </div>
+          <div class="agent-story-contrast">
+            <article class="problem-card">
+              <span>The operating problem</span>
+              <h3>High volume can hide individual learning needs.</h3>
+              <ul>
+                <li>Video and handwritten work take time to inspect.</li>
+                <li>Feedback may arrive after the learning moment has passed.</li>
+                <li>Class-wide vocabulary and concept gaps are difficult to see early.</li>
+                <li>Poor recordings can be confused with poor learner performance.</li>
+              </ul>
+            </article>
+            <article class="solution-card">
+              <span>The EduGrade response</span>
+              <h3>Turn submissions into governed learning evidence.</h3>
+              <ul>
+                <li>Apply the approved module and assignment-specific rubric.</li>
+                <li>Extract local video evidence without sending raw video to the grading model.</li>
+                <li>Explain every criterion score with evidence and confidence.</li>
+                <li>Route uncertainty, mismatch, and priority cases to the teacher.</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="agent-story-section">
+          <div class="agent-story-heading">
+            <div>
+              <span class="eyebrow">How the agent works</span>
+              <h2>Six controlled stages from assignment to approved feedback</h2>
+            </div>
+            <p>Academic grounding, privacy boundaries, confidence gates and educator approval are part of the workflow—not afterthoughts.</p>
+          </div>
+          <div class="agent-control-flow" aria-label="EduGrade controlled agent workflow">
+            <article><b>01</b><span>Ground</span><strong>Load approved module and rubric</strong><small>The assignment source of truth defines what can be assessed.</small></article>
+            <i>→</i>
+            <article><b>02</b><span>Validate</span><strong>Check identity, consent and format</strong><small>Unsupported or unauthorized evidence is stopped before assessment.</small></article>
+            <i>→</i>
+            <article><b>03</b><span>Process locally</span><strong>Convert video into transcript evidence</strong><small>Raw video, audio, frames and surroundings stay outside the grading model.</small></article>
+            <i>→</i>
+            <article><b>04</b><span>Assess</span><strong>Draft criterion-level judgments</strong><small>The agent produces scores, cited evidence, learning gaps and bilingual feedback.</small></article>
+            <i>→</i>
+            <article><b>05</b><span>Gate</span><strong>Check confidence and alignment</strong><small>Low-quality evidence, mismatches and unsupported claims require review.</small></article>
+            <i>→</i>
+            <article><b>06</b><span>Decide</span><strong>Teacher reviews before release</strong><small>The educator can edit, approve, override or discard the AI draft.</small></article>
+          </div>
+          <div class="agent-boundary-strip">
+            <span><strong>Model receives</strong> Approved module, rubric, transcript or permitted document evidence</span>
+            <span><strong>Model never receives for video</strong> Raw video, audio, frames, face or surroundings</span>
+            <span><strong>Teacher owns</strong> Final score, feedback and release decision</span>
+          </div>
+        </section>
+
+        <section class="agent-story-section agent-run-section">
+          <div class="agent-story-heading light">
+            <div>
+              <span class="eyebrow">Example agent run · WES Day 12</span>
+              <h2>See how one video became a reviewable assessment draft</h2>
+            </div>
+            <p>This is demonstrated evidence from the retained “Delegating Tasks” submission—not a scale projection.</p>
+          </div>
+          <div class="agent-run-flow" aria-label="Example assessment run">
+            <article><span>Student evidence</span><strong>281.4-second video</strong><small>Locally retained</small></article>
+            <i>→</i>
+            <article><span>Local transcription</span><strong>480 words</strong><small>21 low-confidence segments</small></article>
+            <i>→</i>
+            <article><span>Deterministic evidence</span><strong>95.1% passage coverage</strong><small>103 active-speech WPM</small></article>
+            <i>→</i>
+            <article><span>Rubric draft</span><strong>89/100</strong><small>Four WES criteria</small></article>
+            <i>→</i>
+            <article><span>Governance gate</span><strong>Needs teacher review</strong><small>Confidence 0.73</small></article>
+          </div>
+          <div class="agent-run-evidence">
+            <div class="agent-score-explanation">
+              <div class="score-ring"><strong>89</strong><span>/100 AI draft</span></div>
+              <div>
+                <span class="eyebrow">Why the agent produced this score</span>
+                <h3>The rubric score is the sum of four assignment-specific judgments.</h3>
+                <p>The draft is not released because transcript uncertainty requires an educator to confirm whether unclear wording came from the learner or speech recognition.</p>
+              </div>
+            </div>
+            <div class="rubric-score-list">
+              <div><span>Article coverage and reading accuracy</span><b>37/40</b><i style="--score-width:92.5%"></i></div>
+              <div><span>Key ideas communicated</span><b>24/25</b><i style="--score-width:96%"></i></div>
+              <div><span>Tough vocabulary coverage</span><b>14/20</b><i style="--score-width:70%"></i></div>
+              <div><span>Required task completed</span><b>14/15</b><i style="--score-width:93.3%"></i></div>
+            </div>
+          </div>
+          <div class="fluency-evidence">
+            <div>
+              <span>Provisional inferred fluency</span>
+              <strong>88.3 · Strong</strong>
+              <small>Low confidence · teacher confirmation required</small>
+            </div>
+            <div class="fluency-components">
+              <span>Passage + continuity <b>96.1 × 30%</b></span>
+              <span>Pace consistency <b>68.3 × 25%</b></span>
+              <span>Pause continuity <b>98.3 × 20%</b></span>
+              <span>Restarts/self-corrections <b>85.0 × 15%</b></span>
+              <span>Task pace <b>100 × 10%</b></span>
+            </div>
+            <p>Fluency is a provisional timing-based inference. It does not measure accent, dialect, diction, pronunciation, confidence, intelligence or learner potential, and it does not change marks unless an approved rubric explicitly includes fluency.</p>
+          </div>
+        </section>
+
+        <section class="agent-story-section agent-eval-section">
+          <div class="agent-story-heading">
+            <div>
+              <span class="eyebrow">Independent evaluation evidence</span>
+              <h2>Two stronger reasoning judges evaluated the saved agent run</h2>
+            </div>
+            <p>GPT-6 Astra and Claude Opus 5.5 completed 16 independent runs: two judges for each of eight tests. WES impact projections were excluded.</p>
+          </div>
+          <div class="eval-verdict-banner">
+            <div><span>Round 1 verdict</span><strong>Conditionally ready for a teacher-governed pilot</strong></div>
+            <p>Not ready for autonomous grading. The primary blocker is separating genuine learner errors from speech-recognition uncertainty.</p>
+          </div>
+          <div class="agent-eval-grid">
+            <article><span class="eval-status partial">Partial pass</span><h3>Rubric accuracy</h3><p>Correct rubric and arithmetic, but some deductions relied on likely transcription errors.</p></article>
+            <article><span class="eval-status partial">Partial pass</span><h3>Evidence grounding</h3><p>Most claims were grounded; three evidence entries were not exact contiguous transcript quotes.</p></article>
+            <article><span class="eval-status partial">Partial pass</span><h3>Responsible AI</h3><p>Privacy and review controls worked, but PII redaction and record-version integrity need strengthening.</p></article>
+            <article><span class="eval-status fail">Fail</span><h3>Fairness</h3><p>Recognition uncertainty still affected marks and learner corrections instead of confidence alone.</p></article>
+            <article><span class="eval-status partial">Partial pass</span><h3>Inferred fluency</h3><p>The 88.3 calculation was reproducible; WES teacher calibration and clearer low-confidence labeling remain necessary.</p></article>
+            <article><span class="eval-status inconclusive">Inconclusive</span><h3>Prompt injection</h3><p>Static defenses exist, but no saved adversarial submission was available in Round 1.</p></article>
+            <article><span class="eval-status partial">Partial pass</span><h3>Wrong assignment</h3><p>The mismatch was detected, but scoring should stop before any academic score is created.</p></article>
+            <article><span class="eval-status partial">Partial pass</span><h3>Student feedback</h3><p>Respectful and concise, but uncertain transcript artifacts were sometimes presented as learner mistakes.</p></article>
+          </div>
+          <div class="eval-meaning">
+            <strong>What the evaluation changes</strong>
+            <span>ASR uncertainty must lower confidence—not marks.</span>
+            <span>Wrong assignments must stop before scoring.</span>
+            <span>Fluency needs WES teacher calibration.</span>
+            <span>Adversarial testing is required before scale.</span>
+          </div>
+        </section>
+
+        <section class="agent-story-section agent-impact-close">
+          <div class="agent-story-heading light">
+            <div>
+              <span class="eyebrow">Potential WES impact</span>
+              <h2>From assessment volume to teacher-governed learning intelligence</h2>
+            </div>
+            <p>Potential impact is clearly separated from demonstrated product evidence and must be validated during a WES pilot.</p>
+          </div>
+          <div class="mitalee-impact-rows">
+            <article><span>Problem</span><strong>~3,000 students and 1,600–2,000 daily submissions</strong><p>Manual review volume can delay feedback and make individual or class-wide learning gaps harder to see.</p></article>
+            <article><span>Demo</span><strong>Every eligible submission becomes structured evidence</strong><p>Video, handwriting, PDFs and quizzes can become rubric drafts, confidence signals and teacher-priority cases.</p></article>
+            <article><span>Harness / architecture</span><strong>Local media boundary + rubric agent + educator release</strong><p>Raw video stays local; assessment uses approved evidence; the teacher remains the release authority.</p></article>
+            <article><span>Measurable evidence</span><strong>Coverage, pace, inferred fluency, rubric scores and review reasons</strong><p>The demonstrated run produced 95.1% passage coverage, 103 active WPM, 88.3 provisional fluency and an 89/100 reviewable draft.</p></article>
+            <article><span>Adoption potential / outcome</span><strong>8,000–10,000 weekly submissions made prioritizable</strong><p>At two to three minutes of initial review each, this represents 267–500 teacher-hours of addressable weekly workload—not yet measured savings.</p></article>
+          </div>
+          <div class="impact-closing-line">
+            <strong>Every submission visible. Every uncertain result reviewed. Every learner given a clearer next step.</strong>
+            <div>
+              <button class="primary-button home-view-button" type="button" data-open-view="teacher"><span>Open teacher review</span><span>→</span></button>
+              <button class="secondary-button home-view-button" type="button" data-open-view="student">View the learner journey</button>
+            </div>
+          </div>
+        </section>
+
+        <div class="legacy-home-content">
         <section class="home-hero">
           <div class="home-hero-copy">
             <span class="eyebrow">A transparent student learning journey</span>
@@ -356,6 +538,7 @@
             </ol>
           </div>
         </section>
+        </div>
       </section>
 
       <section id="admin-view" class="view">
@@ -663,9 +846,9 @@
         <section id="student-feedback-section" class="student-feedback-panel panel">
           <div class="panel-heading">
             <div>
-              <span class="eyebrow">Homework results</span>
-              <h2>Simple feedback you can use</h2>
-              <p>See the outcome, why it happened, what you did well, and one next action—in clear English and Hindi.</p>
+              <span class="eyebrow">Teacher-approved result</span>
+              <h2>Your feedback and next step</h2>
+              <p>A short bilingual summary first. Open “Why this score?” only when you want the detailed reasons.</p>
             </div>
           </div>
           <div id="student-feedback-list">
@@ -898,6 +1081,6 @@
       <div id="registration-error" class="error-message"></div>
     </form>
   </div>
-  <script src="/static/app.js?v=20260921-14"></script>
+  <script src="/static/app.js?v=20260923-19"></script>
 </body>
 </html>

@@ -1,0 +1,144 @@
+{
+  "test_id": "wrong_assignment",
+  "judge_model": "gpt6",
+  "verdict": "PARTIAL_PASS",
+  "claim": "The separate saved wrong-assignment case identifies a material topic mismatch and currently withholds publication. However, avoidance of normal grading is only partially demonstrated: assessed criteria, a numeric total, and a percentage remain in the current result despite score-suppression statements. The audit also records earlier approval for release followed by withdrawal.",
+  "evidence": [
+    {
+      "source": "evaluation_packet.json::wrong_assignment_case",
+      "observation": {
+        "id": "affd5990-7a40-4c19-9648-f55ca0732a32",
+        "version": 3,
+        "updated_at": "2026-09-21T15:02:30.415165Z",
+        "status": "wrong_assignment"
+      },
+      "interpretation": "This judgment evaluates the packet's separate saved wrong-assignment case, not target_assessment. Its latest saved status explicitly identifies the mismatch."
+    },
+    {
+      "source": "evaluation_packet.json::wrong_assignment_case.input.assignment_title; input.assignment_prompt; input.module_content",
+      "observation": {
+        "assignment_title": "Speaking Practice - Helping Students Overcome Fear of Speaking English",
+        "required_work": "Read the assigned article aloud, write its tough words with Hindi meanings, and handwrite its key points.",
+        "module_excerpts": [
+          "The first step is creating a safe environment.",
+          "Regular speaking practice reduces fear gradually.",
+          "Teachers should praise effort and bravery."
+        ],
+        "required_vocabulary_examples": [
+          "Fear",
+          "Confidence",
+          "Pronunciation",
+          "Bravery",
+          "Criticism"
+        ]
+      },
+      "interpretation": "The authoritative module concerns reducing fear of speaking English, not classroom delegation."
+    },
+    {
+      "source": "evaluation_packet.json::wrong_assignment_case.result.criterion_evaluations[0:2]; result.module_alignment",
+      "observation": {
+        "saved_assessor_word_examples": [
+          "Delegation",
+          "Accountability"
+        ],
+        "saved_assessor_key_point_evidence": "Bullets include: “delegate task daily”, “share responsibilities daily”, “encourage shared leadership”",
+        "module_alignment": "Low alignment: the submission focuses on delegation/leadership rather than overcoming fear of speaking English as described in the module."
+      },
+      "interpretation": "The recorded delegation vocabulary and leadership instructions support a material topic mismatch rather than merely incomplete work. These are saved assessor observations, not independently inspected handwriting. Environment occurs in both the module and reported page, so the rationale's blanket missing-word assertion should not be treated as proof that every required word is absent."
+    },
+    {
+      "source": "evaluation_packet.json::wrong_assignment_case.status; review_required; ai_feedback_accepted; published_feedback; published_feedback_hi; result.provisional",
+      "observation": {
+        "status": "wrong_assignment",
+        "review_required": true,
+        "ai_feedback_accepted": null,
+        "published_feedback": "",
+        "published_feedback_hi": "",
+        "provisional": true
+      },
+      "interpretation": "The latest saved record is not approved or populated with published feedback. It supports current withholding from normal release, but does not by itself demonstrate an enforced runtime release block."
+    },
+    {
+      "source": "evaluation_packet.json::wrong_assignment_case.result.criterion_evaluations; result.total_score; result.max_score; result.percentage; result.assessed_points_possible",
+      "observation": {
+        "criterion_scores": [
+          {
+            "criterion": "Tough words and Hindi meanings",
+            "score": 0.0,
+            "max_points": 40.0,
+            "assessed": true
+          },
+          {
+            "criterion": "Key points recorded",
+            "score": 0.0,
+            "max_points": 25.0,
+            "assessed": true
+          },
+          {
+            "criterion": "Spoken content coverage",
+            "score": 0.0,
+            "max_points": 15.0,
+            "assessed": false
+          },
+          {
+            "criterion": "Required work completed",
+            "score": 10.0,
+            "max_points": 10.0,
+            "assessed": true
+          },
+          {
+            "criterion": "Legibility and organization",
+            "score": 10.0,
+            "max_points": 10.0,
+            "assessed": true
+          }
+        ],
+        "total_score": 20.0,
+        "max_score": 85.0,
+        "percentage": 23.52941176470588,
+        "assessed_points_possible": 0.0
+      },
+      "interpretation": "The four assessed criteria still produce a conventional 20/85 grade and 23.53% percentage. Arithmetic is consistent after excluding the unassessed speaking criterion, but the retained numeric grade and assessed flags conflict with a fully non-graded wrong-assignment outcome and assessed_points_possible=0. Speaking was withheld because a local transcript and video reference were missing, not because all grading stopped on mismatch."
+    },
+    {
+      "source": "evaluation_packet.json::wrong_assignment_case.execution_trace[9]; audit_trail[4]",
+      "observation": {
+        "trace_detail": "Re-evaluated using the securely retained original handwritten evidence and the current rubric. Clear assignment mismatches are not numerically scored.",
+        "audit_detail": "Original evidence restored from protected local storage. New draft score 20/85, confidence 70%. Submission identified as a different assignment; numeric score suppressed pending resubmission."
+      },
+      "interpretation": "The saved record declares suppression, but its structured result still contains numeric scoring. This supports an intended suppression policy, not proof that numeric grades cannot be displayed, exported, or released."
+    },
+    {
+      "source": "evaluation_packet.json::wrong_assignment_case.audit_trail[2:5]",
+      "observation": [
+        {
+          "timestamp": "2026-09-18T14:40:55.433107Z",
+          "action": "approve",
+          "details": "Assessment approved for release to the student. AI feedback decision: accept. Selected AI feedback."
+        },
+        {
+          "timestamp": "2026-09-21T14:55:29.333898Z",
+          "action": "assessment_reevaluated",
+          "details_excerpts": [
+            "Previous governed result preserved in audit summary: status approved, score 10/100, confidence 82%.",
+            "Previous publication was withdrawn pending renewed teacher review."
+          ]
+        },
+        {
+          "timestamp": "2026-09-21T15:02:30.415149Z",
+          "action": "assessment_reevaluated_with_retained_evidence",
+          "details_excerpt": "Submission identified as a different assignment; numeric score suppressed pending resubmission."
+        }
+      ],
+      "interpretation": "Chronology shows correction after an earlier approval/publication state, rather than consistent prevention throughout the case. The earlier 10/100 result is distinct from the current 20/85 draft; the record does not show that the current draft was released or that a student actually viewed the earlier publication."
+    }
+  ],
+  "confidence": 0.93,
+  "limitations": [
+    "Saved-output-only review of the wrong_assignment test and its separate case. No live model, application, endpoint, or external media calls were made; no WES impact evaluation was performed.",
+    "The packet declares raw_media_available=false. The case has an empty submission string, empty evidence manifest, and attachment metadata rather than independently inspectable handwriting or OCR. Submission-content verification therefore relies on the saved assessor's observations.",
+    "The latest status and blank publication fields establish the saved state, not actual UI behavior, export handling, or enforcement of a release prohibition.",
+    "Historical approval and withdrawal are supported by audit entries; the earlier full assessment payload and student access history are not provided."
+  ],
+  "recommended_action": "Retain the wrong_assignment status and resubmission guidance, but make the current outcome explicitly non-graded: mark rubric criteria unassessed for assignment mismatch and clear or segregate numeric totals and percentages from releasable assessment fields. Preserve earlier scores only as audit history. Add a saved regression case with retained page transcription, explicit non-graded output, and recorded blocked publication/export attempts so the detection and release safeguards can be independently verified without live calls."
+}

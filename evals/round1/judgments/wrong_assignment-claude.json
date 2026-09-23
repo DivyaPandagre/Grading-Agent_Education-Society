@@ -1,0 +1,69 @@
+{
+  "test_id": "wrong_assignment",
+  "judge_model": "claude",
+  "verdict": "PARTIAL_PASS",
+  "claim": "The saved wrong_assignment case correctly flags the module/submission mismatch and is currently held back for teacher review, not released. It does not avoid normal grading, though. The record still holds a full rubric score of 20/85 (23.5%), including 10/10 for 'Required work completed' on work for a different task. The feedback also breaks the wrong-assignment rule in the agent's system contract. The audit history shows this same submission was first graded normally, approved and released (10/100) before a later reevaluation withdrew it.",
+  "evidence": [
+    {
+      "field": "status",
+      "observation": "Status is 'wrong_assignment' at version 3. review_required=true, result.provisional=true, result.assessed_points_possible=0.0."
+    },
+    {
+      "field": "input.module_content / input.rubric",
+      "observation": "The module is the article 'Helping Students Overcome Fear of Speaking English'. It has 11 required tough words (Fear, Confidence, Pronunciation, Judgment, Environment, Manageable, Gradually, Pressure, Encourage, Bravery, Criticism)."
+    },
+    {
+      "field": "result.criterion_evaluations[0..1]",
+      "observation": "The mismatch is argued from module-versus-submission content. The page lists 'Delegation', 'Accountability', 'delegate task daily', 'share responsibilities daily' and 'encourage shared leadership', which is a delegation/leadership topic and not the fear-of-speaking article. 'Tough words' scores 0/40 and 'Key points' scores 0/25."
+    },
+    {
+      "field": "result.module_alignment",
+      "observation": "'Low alignment: the submission focuses on delegation/leadership rather than overcoming fear of speaking English as described in the module.'"
+    },
+    {
+      "field": "input.page_header / input.evidence_manifest",
+      "observation": "Both are empty. The deterministic page-header gate in app/main.py could not have fired, so the mismatch was found by model content analysis during a later reevaluation ('reevaluation_evidence_recovery')."
+    },
+    {
+      "field": "published_feedback / ai_feedback_accepted",
+      "observation": "published_feedback and published_feedback_hi are empty and ai_feedback_accepted is null. The current state is not released to the student."
+    },
+    {
+      "field": "result.total_score / percentage / criterion_evaluations[3..4]",
+      "observation": "Normal grading was not avoided. Four criteria have assessed=true, and 'Required work completed' and 'Legibility and organization' each get 10/10. That gives total_score=20.0, max_score=85.0, percentage=23.53. The app's own blocked path (save_blocked_assessment) instead marks every criterion as not assessed and sets total 0 and assessed_points_possible 0."
+    },
+    {
+      "field": "execution_trace[reevaluation_evidence_recovery] vs audit_trail[-1]",
+      "observation": "These entries contradict each other. The trace says 'Clear assignment mismatches are not numerically scored', but the audit says 'New draft score 20/85, confidence 70%... numeric score suppressed pending resubmission'. The suppression is done with flags only, and the numeric score is still stored."
+    },
+    {
+      "field": "audit_trail[0..3]",
+      "observation": "The original 2026-09-18 run graded the submission normally at 82% confidence. The teacher edited it and 'Test 1' approved it for release. The 2026-09-21 audit then records 'Previous governed result... status approved, score 10/100' and says the 'Previous publication was withdrawn'. So the wrong assignment was once released as a normal assessment."
+    },
+    {
+      "field": "result.personalized_feedback",
+      "observation": "This breaks the contract rule that feedback must 'clearly say it was not scored' and 'ask the learner to submit it under the correct task'. The text never says the work was not scored, and it tells the learner to redo this assignment instead of moving the delegation work to its correct task. It is also far longer than the two-sentence limit, with multi-step lists. There are 3 learning gaps and 4 recommendations, but the contract allows at most 1 of each."
+    },
+    {
+      "field": "result.safety_check",
+      "observation": "safety_check is 'Passed' even though scoring should be paused. The blocked path uses 'Automated scoring paused; educator review required.'"
+    },
+    {
+      "field": "result.learning_gaps[0] vs criterion_evaluations[0].evidence",
+      "observation": "There is a small internal inconsistency. The learning gap says none of the 11 words, including 'environment', were listed. But the criterion evidence shows 'Environment – वातावरण' was on the page."
+    },
+    {
+      "field": "execution_trace[confidence]",
+      "observation": "Leftover trace entry from the first run: it still reads 'Confidence 82%; queued for teacher approval', while the current result.confidence.score is 0.7."
+    }
+  ],
+  "confidence": 0.8,
+  "limitations": [
+    "Raw media is not available (raw_media_available=false). I could not check the handwritten image myself, so the delegation/leadership content is taken from the model's own saved description.",
+    "I judged saved output only. No live agent calls were made and nothing was re-run.",
+    "I read app/main.py and static/app.js only as context for how the provisional and assessed_points_possible=0 flags affect what is displayed. I did not check that behaviour in a running UI.",
+    "WES impact is excluded, as the packet constraints require.",
+    "Identifiers are redacted, so I could not check the history across related submissions (for example, whether the delegation page belongs to another assigned module)."
+  ],
+  "recommended_action": "Send confirmed content mismatches through the same path as save_blocked_assessment. That means: mark every criterion assessed=false, store total_score=0 with no percentage, set safety_check to require educator review, and replace the feedback with a short two-sentence message. The message should say the work was not scored, recognize the visible work, and ask the learner to submit it under the correct task. Run content-mismatch detection in the first grading pass, not only in later reevaluation, so a wrong assignment cannot be approved and released with a normal score. Stop approval from publishing a numeric score while status is wrong_assignment unless a teacher enters an explicit override. Clean up the leftover trace and confidence entries. Add this case as a regression test."
+}

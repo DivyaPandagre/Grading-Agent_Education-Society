@@ -16,6 +16,7 @@ from .agent import AgentConfigurationError, AgentResponseError, AssessmentAgent
 from .auth import Principal, get_principal, principal_from_request, require_roles
 from .consent_store import ConsentStore
 from .config import Settings, get_settings
+from .evidence_metrics import apply_video_assignment_metrics
 from .models import (
     AssessmentCreate,
     AssessmentRecord,
@@ -767,6 +768,17 @@ async def create_assessment(
                 "A sanitized transcript, local-processing confirmation, and local "
                 "video reference are required before assessment.",
                 assessment_owner_id,
+            )
+        if request.local_video_evidence is not None:
+            apply_video_assignment_metrics(
+                request.local_video_evidence,
+                request.submission,
+                module.content,
+                store.list(),
+                request.student_id,
+                request.homework_id,
+                homework.grade_level,
+                homework.learner_type,
             )
     source_block = module_readiness_block(module, request)
     if source_block is not None:

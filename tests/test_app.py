@@ -351,7 +351,7 @@ def test_student_page_supports_multiple_documents_and_submission_history():
     assert 'id="student-work-indicator"' in response.text
     assert 'id="student-subject-progress"' in response.text
     assert "Future vision · not active" in response.text
-    assert "Simple feedback you can use" in response.text
+    assert "Your feedback and next step" in response.text
     assert 'data-submission-type="handwritten_image"' in response.text
     assert 'data-submission-type="handwritten_pdf"' in response.text
     assert 'data-submission-type="video_and_handnote"' in response.text
@@ -421,7 +421,7 @@ def test_teacher_page_has_no_fake_performance_metrics():
     assert "Wazir Education Society (WES)" in response.text
     assert "Every learner’s work can be seen" in response.text
     assert "function closeLiveInspector()" in app_script
-    assert "Simple feedback you can use" in response.text
+    assert "Your feedback and next step" in response.text
     assert "function conciseStudentText" in app_script
     assert "function conciseStudentInstruction" in app_script
     assert "function studentFriendlyAlignment" in app_script
@@ -441,10 +441,14 @@ def test_teacher_page_has_no_fake_performance_metrics():
     assert "Nothing has been marked down for this submission." in app_script
     assert "student-bilingual-feedback" in app_script
     assert "student-single-next-step" in app_script
-    assert "Feedback to you" in app_script
+    assert "<span>English</span>" in app_script
+    assert "<span>हिंदी</span>" in app_script
     assert "यह काम दूसरे कार्य का है" in app_script
     assert "Your next action" in app_script
-    assert "View score details" in app_script
+    assert "Why this score? / यह स्कोर क्यों?" in app_script
+    assert "function studentScoreReasonMarkup" in app_script
+    assert "function studentCriterionHindiLabel" in app_script
+    assert "What to work on / क्या सुधारें" in app_script
     assert "What the learner will understand" in app_script
     assert 'id="student-side-nav"' in response.text
     assert 'id="student-opportunity-section"' in response.text
